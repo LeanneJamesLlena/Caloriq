@@ -1,19 +1,44 @@
 // builds the Express app (middleware, routes)
-import express from 'express'
-import routes from './routes/index.js'
+import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
+import routes from './routes/index.js';
+
 const app = express();
 
-//middlewares
-//help express application parse json format into javascript object
+
+// SECURITY & PARSING MIDDLEWARES
+// Parse JSON bodies into javascript object and store in the req.body
 app.use(express.json());
-//help express application parse html form format into javascript object
+
+// Parse URL-encoded form data (e.g. from HTML forms) and store in the req.body
 app.use(express.urlencoded({ extended: false }));
 
-//connect routes
-// all routes starts with /api will be handled by the router routes
-//meaning mount all subroutes that starts with /api
+// Parse cookies so we can read tokens from req.cookies., when the user logs in they get access token and refreshtoken and usually stored inside cookie, and by default when cookie is sent to backend express doesnt have any concept about it cookieParser helps.
+app.use(cookieParser());
+
+// Add secure HTTP headers (prevents XSS, clickjacking, etc.)
+app.use(helmet());
+
+// use CORS to allow frontend (React on localhost:5173) to talk to backend API
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true, // allow cookies and auth headers
+}));
+
+// Limit repeated requests (helps prevent brute force or spam)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,                 // limit each IP to 100 requests per window
+});
+app.use(limiter);
+
+
+
+// ROUTES
+// Mount all API routes under /api
 app.use('/api', routes);
-
-
 
 export default app;
