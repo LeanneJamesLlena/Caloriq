@@ -42,8 +42,7 @@ app.use(limiter);
 app.use('/api', routes);
 
 
-
-//route erros handlers
+//route error handlers
 app.use((req, res) => {
     //this will handle error, 404 status used for not found, so if route not found then usethis response
     res.status(404).json({message: "route not found"});
@@ -53,4 +52,5 @@ app.use((err, req, res, next) => {
     console.error(err);
     res.status(err.status || 500).json({error: "Server error"});
 })
+
 export default app;
