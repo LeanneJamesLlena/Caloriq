@@ -33,7 +33,10 @@ export async function login(req, res) {
         //pass the email and password to verifyUser to check if the user exist with that kind of email and if the given password matches th epassword stored in database
         const user = await verifyUser(email, password);
         //when credentials are valid, give the user access token and refresh token
-        const { accessToken, refreshToken } = signTokens(user);
+        const { accessToken, refreshToken } = await signTokens(user);
+        //DEBUG
+        console.log('accessToken: ', accessToken);
+        console.log('refreshToken: ', refreshToken);
         res.cookie(config.COOKIE_NAME, refreshToken, refreshCookieOptions);
         res.json({ accessToken, user: { id: user._id, email: user.email }});
     } catch (error) {
@@ -42,7 +45,6 @@ export async function login(req, res) {
 }
 
 export async function refresh(req, res) {
-
     // `readAndValidateRefresh` middleware already put user on req.user
     const userLike = { _id: req.user.id, email: req.user.email, tokenVersion: req.user.tv };
     const { accessToken, refreshToken } = signTokens(userLike);

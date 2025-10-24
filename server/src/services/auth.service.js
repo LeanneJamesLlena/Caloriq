@@ -49,7 +49,7 @@ export async function signTokens(user) {
     return { accessToken, refreshToken };
 }
 
-// optional: bump tokenVersion to invalidate all refresh tokens (e.g., logout-all)
+//bump tokenVersion to invalidate all refresh tokens (e.g., logout-all)
 export async function bumpTokenVersion(userId) {
-  await User.findByIdAndUpdate(userId, { $inc: { tokenVersion: 1 } });
+    await User.findByIdAndUpdate(userId, { $inc: { tokenVersion: 1 } });
 }
