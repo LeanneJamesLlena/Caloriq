@@ -34,7 +34,7 @@ export async function login(req, res) {
         const user = await verifyUser(email, password);
         //when credentials are valid, give the user access token and refresh token
         const { accessToken, refreshToken } = await signTokens(user);
-        //DEBUG
+        //DEBUGGGGG
         console.log('accessToken: ', accessToken);
         console.log('refreshToken: ', refreshToken);
         res.cookie(config.COOKIE_NAME, refreshToken, refreshCookieOptions);
@@ -47,7 +47,8 @@ export async function login(req, res) {
 export async function refresh(req, res) {
     // `readAndValidateRefresh` middleware already put user on req.user
     const userLike = { _id: req.user.id, email: req.user.email, tokenVersion: req.user.tv };
-    const { accessToken, refreshToken } = signTokens(userLike);
+    const { accessToken, refreshToken } = await signTokens(userLike);
+    console.log('REFRESH DEBUG:', { accessToken, refreshToken, userLike }); // DEBUGGGG
     // rotate refresh cookie
     res.cookie(config.COOKIE_NAME, refreshToken, refreshCookieOptions);
     res.json({ accessToken });
@@ -60,3 +61,7 @@ export async function logout(req, res) {
     res.json({ ok: true });
 };
 
+// TEST ROUTE: test route to verify access token
+export async function me(req, res) {
+    res.json({ id: req.user.id, email: req.user.email });
+}
