@@ -5,9 +5,9 @@ import { getMyTargets, putMyTargets }from '../controllers/profile.controller.js'
 const router = express.Router();
 
 //GET /api/profile/targets 
-router.get('/targets', verifyAccess, getMyTargets);
+router.get('/targets', verifyAccess, getMyTargets); //tested and working
 //PUT /api/profile/targets 
-router.put('/targets', verifyAccess, putMyTargets);
+router.put('/targets', verifyAccess, putMyTargets); //tested and working
 
 
 export default router;
