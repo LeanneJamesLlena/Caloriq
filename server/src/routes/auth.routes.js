@@ -17,4 +17,3 @@ router.post('/logout', logout); //tested and working
 router.get('/me', verifyAccess, me);
 export default router;
 
-//sign that everything got pushed perfectly.
