@@ -1,10 +1,17 @@
 import express from 'express'
-import { testGetAuthRoute }from '../controllers/auth.controller.js'
+//import the logics of the routes
+import { register, login, refresh, logout, me } from '../controllers/auth.controller.js';
+import { verifyAccess, readAndValidateRefresh } from '../middleware/auth.js';
+
 const router = express.Router();
 
+router.post('/register', register); //tested and working
+router.post('/login', login); //tested and working
+router.post('/refresh', readAndValidateRefresh, refresh); //tested and working
+router.post('/logout', logout); //tested and working
 
-router.get('/', testGetAuthRoute);
-
-
-
+// TEMPORARY PROTECTTED ROUTE to test access tokens
+router.get('/me', verifyAccess, me);
 export default router;
+
+//sign that everything got pushed perfectly.
