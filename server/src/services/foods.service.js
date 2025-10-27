@@ -1,23 +1,50 @@
 import { FoodCache } from '../models/FoodCache.model.js';
 import { fdcSearchFoods, fdcGetFood } from '../integrations/fdc.client.js';
 
+const ALLOWED_DATATYPES = ['Foundation', 'SR Legacy'];
 // FDC nutrient numbers (stable IDs)
 const N = {
-    KCAL: 1008,
-    PROTEIN: 1003,
-    CARBS: 1005,
-    FAT: 1004,
-    SAT_FAT: 1258,
-    FIBER: 1079,
-    SUGARS: 2000,
-    SODIUM: 1093,
+    KCAL:   ['1008', '208'],
+    PROTEIN:['1003', '203'],
+    CARBS:  ['1005', '205'],
+    FAT:    ['1004', '204'],
+    SAT_FAT:['1258', '606'],
+    FIBER:  ['1079', '291'],
+    SUGARS: ['2000', '269'],
+    SODIUM: ['1093', '307'],
 };
 
-// Pull a numeric nutrient by its number; default 0 when missing
-function readNutrient(foodNutrients, num) {
-    const item = (foodNutrients || []).find((fn) => fn?.nutrient?.number == String(num));
-    return Number(item?.amount ?? 0);
+function isZeroBlock(per100g = {}) {
+    return Object.values(per100g).every(v => !Number(v));
 }
+
+// Replace your readNutrient with this:
+function readNutrient(foodNutrients = [], nums) {
+    const targets = Array.isArray(nums) ? nums.map(String) : [String(nums)];
+
+    const item = foodNutrients.find((fn) => {
+        const num =
+        fn?.nutrient?.number ??
+        fn?.nutrientNumber ??
+        fn?.nutrient?.id ??
+        fn?.nutrientId;
+        return num && targets.includes(String(num));
+    });
+
+    if (!item) return 0;
+
+    // Amount field can be 'amount' or 'value'
+    let amount = item.amount ?? item.value ?? 0;
+
+    // Handle energy possibly reported in kJ
+    const unit = item?.nutrient?.unitName ?? item?.unitName;
+    const isEnergy = targets.includes('1008') || targets.includes('208');
+    if (isEnergy && unit && unit.toLowerCase() === 'kj') {
+        amount = amount / 4.184; // kJ → kcal
+    }
+
+    return Number(amount) || 0;
+};
 
 // Attempt to detect a “variant” label from description (raw/cooked)
 function detectVariant(desc = '') {
@@ -92,11 +119,12 @@ export async function searchFoodsService(q) {
 export async function getFoodByIdService(fdcId) {
     const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
-    const cached = await FoodCache.findOne({ fdcId });
-    const freshEnough =
-        cached && cached.lastFetchedAt && Date.now() - cached.lastFetchedAt.getTime() < CACHE_TTL_MS;
+    // 1) Try cache first
+    const cached = await FoodCache.findOne({ fdcId }).lean();
+    const freshEnough = cached && cached.lastFetchedAt &&
+        (Date.now() - cached.lastFetchedAt.getTime() < CACHE_TTL_MS);
 
-    if (freshEnough) {
+    if (freshEnough && !isZeroBlock(cached.per100g)) {
         return {
         fdcId: cached.fdcId,
         name: cached.name,
@@ -107,9 +135,30 @@ export async function getFoodByIdService(fdcId) {
         };
     }
 
-    const detail = await fdcGetFood(fdcId);
-    const normalized = normalizeFood(detail);
+    // If we had a bad/zero cache, drop it before refetch
+    if (cached && isZeroBlock(cached.per100g)) {
+        await FoodCache.deleteOne({ fdcId });
+    }
 
+    // 2) Fetch live detail from FDC
+    const detail = await fdcGetFood(fdcId);
+
+    // Guard: allow generic datasets only
+    if (!ALLOWED_DATATYPES.includes(detail.dataType)) {
+        const err = new Error(`Only generic foods are supported (got ${detail.dataType})`);
+        err.status = 422;
+        throw err;
+    }
+
+    // 3) Normalize → must produce non-zero per100g for generics
+    const normalized = normalizeFood(detail);
+    if (isZeroBlock(normalized.per100g)) {
+        const err = new Error('Nutrient data unavailable for this record');
+        err.status = 422;
+        throw err;
+    }
+
+    // 4) Upsert into cache and return
     await FoodCache.findOneAndUpdate(
         { fdcId },
         { ...normalized, lastFetchedAt: new Date() },
