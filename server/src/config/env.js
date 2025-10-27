@@ -18,4 +18,8 @@ export const config = {
     CLIENT_ORIGIN: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
     COOKIE_NAME: process.env.COOKIE_NAME || 'refreshToken',
 
+    //Fdc
+    FDC_API_KEY: process.env.FDC_API_KEY,
+    FDC_ALLOWED_DATATYPES: process.env.FDC_ALLOWED_DATATYPES || 'Foundation,SR%20Legacy',
+
 };
