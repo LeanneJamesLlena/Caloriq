@@ -2,26 +2,30 @@ import { FoodCache } from '../models/FoodCache.model.js';
 import { fdcSearchFoods, fdcGetFood } from '../integrations/fdc.client.js';
 
 const ALLOWED_DATATYPES = ['Foundation', 'SR Legacy'];
-// FDC nutrient numbers (stable IDs)
+
+// FDC nutrient numbers (new + legacy)
 const N = {
-    KCAL:   ['1008', '208'],
-    PROTEIN:['1003', '203'],
-    CARBS:  ['1005', '205'],
-    FAT:    ['1004', '204'],
-    SAT_FAT:['1258', '606'],
-    FIBER:  ['1079', '291'],
-    SUGARS: ['2000', '269'],
-    SODIUM: ['1093', '307'],
+    KCAL:    ['1008', '208'],
+    PROTEIN: ['1003', '203'],
+    CARBS:   ['1005', '205'],
+    FAT:     ['1004', '204'],
+    SAT_FAT: ['1258', '606'],
+    FIBER:   ['1079', '291'],
+    SUGARS:  ['2000', '269'],
+    SODIUM:  ['1093', '307'],
 };
 
 function isZeroBlock(per100g = {}) {
     return Object.values(per100g).every(v => !Number(v));
 }
 
-// Replace your readNutrient with this:
+function calcKcalFromMacros({ protein = 0, carbs = 0, fat = 0 }) {
+    return Math.round(4 * protein + 4 * carbs + 9 * fat);
+}
+
+// Read a nutrient regardless of FDC shape (Foundation/SR Legacy)
 function readNutrient(foodNutrients = [], nums) {
     const targets = Array.isArray(nums) ? nums.map(String) : [String(nums)];
-
     const item = foodNutrients.find((fn) => {
         const num =
         fn?.nutrient?.number ??
@@ -30,23 +34,20 @@ function readNutrient(foodNutrients = [], nums) {
         fn?.nutrientId;
         return num && targets.includes(String(num));
     });
-
     if (!item) return 0;
 
-    // Amount field can be 'amount' or 'value'
     let amount = item.amount ?? item.value ?? 0;
 
-    // Handle energy possibly reported in kJ
+    // If energy reported in kJ, convert to kcal
     const unit = item?.nutrient?.unitName ?? item?.unitName;
     const isEnergy = targets.includes('1008') || targets.includes('208');
     if (isEnergy && unit && unit.toLowerCase() === 'kj') {
-        amount = amount / 4.184; // kJ → kcal
+        amount = amount / 4.184;
     }
-
     return Number(amount) || 0;
-};
+}
 
-// Attempt to detect a “variant” label from description (raw/cooked)
+// Simple “raw/cooked” tag from description
 function detectVariant(desc = '') {
     const d = desc.toLowerCase();
     if (d.includes('raw')) return 'raw';
@@ -56,19 +57,24 @@ function detectVariant(desc = '') {
 
 // Build normalized per-100g + portions from an FDC detail
 function normalizeFood(detail) {
-    // For SR Legacy / Foundation, nutrients are per 100g
-    const per100g = {
-        kcal: readNutrient(detail.foodNutrients, N.KCAL),
+    // For SR Legacy / Foundation, nutrients are per 100 g
+    let per100g = {
+        kcal:    readNutrient(detail.foodNutrients, N.KCAL),
         protein: readNutrient(detail.foodNutrients, N.PROTEIN),
-        carbs: readNutrient(detail.foodNutrients, N.CARBS),
-        sugars: readNutrient(detail.foodNutrients, N.SUGARS),
-        fiber: readNutrient(detail.foodNutrients, N.FIBER),
-        fat: readNutrient(detail.foodNutrients, N.FAT),
-        satFat: readNutrient(detail.foodNutrients, N.SAT_FAT),
-        sodium: readNutrient(detail.foodNutrients, N.SODIUM),
+        carbs:   readNutrient(detail.foodNutrients, N.CARBS),
+        sugars:  readNutrient(detail.foodNutrients, N.SUGARS),
+        fiber:   readNutrient(detail.foodNutrients, N.FIBER),
+        fat:     readNutrient(detail.foodNutrients, N.FAT),
+        satFat:  readNutrient(detail.foodNutrients, N.SAT_FAT),
+        sodium:  readNutrient(detail.foodNutrients, N.SODIUM),
     };
 
-    // Portions (fall back to 100 g)
+    // Fallback: if Energy is missing but macros exist, compute it
+    if (!Number(per100g.kcal) && (per100g.protein || per100g.carbs || per100g.fat)) {
+        per100g.kcal = calcKcalFromMacros(per100g);
+    }
+
+    // Portions (always include 100 g)
     const portions = [{ name: '100 g', gram: 100 }];
 
     (detail.foodPortions || []).forEach((p) => {
@@ -81,12 +87,12 @@ function normalizeFood(detail) {
         p?.measureUnit?.name ||
         'portion';
 
-        // de-dupe simple cases
         if (!portions.some((x) => x.name === name && x.gram === gram)) {
         portions.push({ name, gram });
         }
     });
-    const name = detail.description?.trim() || 'Food';
+
+    const name = (detail.description || '').trim() || 'Food';
     const variant = detectVariant(name);
 
     return {
@@ -95,36 +101,44 @@ function normalizeFood(detail) {
         variant,
         per100g,
         portions,
+        dataType: detail.dataType, //  remember dataset
     };
 }
 
-// Search generics (Foundation/SR Legacy) and return lightweight list
+// Search generics and return a clean, ranked list
 export async function searchFoodsService(q) {
     if (!q || String(q).trim().length < 2) return [];
     const json = await fdcSearchFoods(q.trim());
-    const foods = (json.foods || [])
-        .filter((f) => ['Foundation', 'SR Legacy'].includes(f.dataType))
+
+    const items = (json.foods || [])
+        .filter((f) => ALLOWED_DATATYPES.includes(f.dataType))
         .map((f) => ({
         fdcId: f.fdcId,
-        name: f.description,
-        variant: detectVariant(f.description),
+        name: f.description || '',
+        variant: detectVariant(f.description || ''),
         dataType: f.dataType,
-        }))
-        .slice(0, 25);
+        }));
 
-    return foods;
+    // Prefer Foundation on top
+    items.sort((a, b) => {
+        if (a.dataType === b.dataType) return a.name.localeCompare(b.name);
+        return a.dataType === 'Foundation' ? -1 : 1;
+    });
+
+    return items.slice(0, 25);
 }
 
 // Get a normalized food; use cache with ~30-day TTL
 export async function getFoodByIdService(fdcId) {
     const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
-
     // 1) Try cache first
     const cached = await FoodCache.findOne({ fdcId }).lean();
-    const freshEnough = cached && cached.lastFetchedAt &&
+    const freshEnough =
+        cached && cached.lastFetchedAt &&
         (Date.now() - cached.lastFetchedAt.getTime() < CACHE_TTL_MS);
 
-    if (freshEnough && !isZeroBlock(cached.per100g)) {
+    // If cached and valid (generic + non-zero macros), serve it
+    if (freshEnough && cached?.dataType && ALLOWED_DATATYPES.includes(cached.dataType) && !isZeroBlock(cached.per100g)) {
         return {
         fdcId: cached.fdcId,
         name: cached.name,
@@ -135,8 +149,8 @@ export async function getFoodByIdService(fdcId) {
         };
     }
 
-    // If we had a bad/zero cache, drop it before refetch
-    if (cached && isZeroBlock(cached.per100g)) {
+    // If cached but invalid (non-generic or zero block), drop it before refetch
+    if (cached && (!ALLOWED_DATATYPES.includes(cached.dataType || '') || isZeroBlock(cached.per100g))) {
         await FoodCache.deleteOne({ fdcId });
     }
 
@@ -167,5 +181,3 @@ export async function getFoodByIdService(fdcId) {
 
     return { ...normalized, cached: false };
 }
-
-
