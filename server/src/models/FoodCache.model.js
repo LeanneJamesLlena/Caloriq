@@ -6,7 +6,10 @@ const portionsSchema = new mongoose.Schema(
         gram: { type: Number, required: true },
 
     },
-    { _id: false }
+
+    { 
+        _id: false 
+    }
 
 );
 
@@ -21,7 +24,10 @@ const per100gSchema = new mongoose.Schema(
         satFat: { type: Number, required: true },
         sodium: { type: Number, required: true },
     },
-    { _id: false }
+    
+    { 
+        _id: false 
+    }
 );
 //main schema will that will be saved in database
 const foodCacheSchema = new mongoose.Schema(
@@ -33,7 +39,10 @@ const foodCacheSchema = new mongoose.Schema(
         portions: { type: [portionsSchema], default: [] },
         lastFetchedAt: { type: Date, default: () => new Date() },
     },
-    { timestamps: true }
+
+    {
+        timestamps: true 
+    }
 );
 
 export const FoodCache = mongoose.model('FoodCache', foodCacheSchema);
