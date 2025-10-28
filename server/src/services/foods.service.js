@@ -46,7 +46,7 @@ function hasNutrientNumber(foodNutrients = [], nums) {
 }
 
 
-// NEW: read sugars with robust fallback
+// read sugars with robust fallback
 function readSugars(foodNutrients = []) {
     const totalPresent = hasNutrientNumber(foodNutrients, N.SUGARS);
     const total = readNutrient(foodNutrients, N.SUGARS);
