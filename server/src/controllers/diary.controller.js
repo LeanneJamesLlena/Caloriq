@@ -1,11 +1,43 @@
+import { addEntry, getDay, updateEntry, deleteEntry } from '../services/diary.service.js';
 
-
-
-export const testGetDiaryRoute = async (req, res) => {
+export async function getDiaryDay(req, res) {
     try {
-        res.status(200).json({message: "diary route working :)"});
+        const data = await getDay({ userId: req.user.id, date: req.query.date });
+        res.json(data);
     } catch (error) {
-        res.status(500).json({message: error.message});
-        console.log(error.message);
+        res.status(error.status || 500).json({ error: error.message || 'Failed to get diary' });
+    }
+}
+
+export async function postDiaryEntry(req, res) {
+    try {
+        const { date, mealType, fdcId, grams, label } = req.body;
+        const entry = await addEntry({ userId: req.user.id, date, mealType, fdcId, grams, label });
+        res.status(201).json(entry);
+    } catch (error) {
+        res.status(error.status || 500).json({ error: error.message || 'Failed to add entry' });
+    }
+}
+
+export async function putDiaryEntry(req, res) {
+    try {
+        const entry = await updateEntry({
+        userId: req.user.id,
+        entryId: req.params.id,
+        grams: req.body.grams,
+        mealType: req.body.mealType,
+        });
+        res.json(entry);
+    } catch (error) {
+        res.status(error.status || 500).json({ error: error.message || 'Failed to update entry' });
+    }
+}
+
+export async function deleteDiaryEntry(req, res) {
+    try {
+        const result = await deleteEntry({ userId: req.user.id, entryId: req.params.id });
+        res.json(result);
+    } catch (error) {
+        res.status(error.status || 500).json({ error: error.message || 'Failed to delete entry' });
     }
 }
