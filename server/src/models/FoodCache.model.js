@@ -35,6 +35,8 @@ const foodCacheSchema = new mongoose.Schema(
         fdcId: { type: Number, unique: true, index: true },
         name: { type: String, required: true },
         variant: { type: String, default: null }, // e.g., raw/cooked
+        //remember dataset to enforce generic-only on reads
+        dataType:{ type: String, enum: ['Foundation', 'SR Legacy'], required: true },
         per100g: { type: per100gSchema, required: true },
         portions: { type: [portionsSchema], default: [] },
         lastFetchedAt: { type: Date, default: () => new Date() },
