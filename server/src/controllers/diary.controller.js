@@ -1,6 +1,7 @@
 // define the logics of the routes inside diary.routes.js
 import { addEntry, getDay, updateEntry, deleteEntry } from '../services/diary.service.js';
 
+// send Diary logs of the user(filtered by date)
 export async function getDiaryDay(req, res) {
     try {
         const data = await getDay({ userId: req.user.id, date: req.query.date });
@@ -10,6 +11,7 @@ export async function getDiaryDay(req, res) {
     }
 }
 
+//add new meal to the user's diary(filtered by date)
 export async function postDiaryEntry(req, res) {
     try {
         const { date, mealType, fdcId, grams, label } = req.body;

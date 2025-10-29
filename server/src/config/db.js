@@ -1,14 +1,25 @@
 import mongoose from 'mongoose'
 import { config } from './env.js'
-//CODE FOR EMPTYING foodcache collection:import { FoodCache } from '../models/FoodCache.model.js';
-
+/*
+CODE FOR EMPTYING database collections such as foodcache and diary entries:
+import { FoodCache } from '../models/FoodCache.model.js';
+import { DiaryEntry } from '../models/DiaryEntry.model.js;
+*/
+import { DiaryEntry } from '../models/DiaryEntry.model.js';
 
 export const connectDB = async () => {
     try {
         await mongoose.connect(config.MONGO_URI);
-        /* CODE FOR EMPTYING foodcache collection:
-        if (process.env.CLEAR_FOOD_CACHE === 'true') {
+        /* CODE FOR EMPTYING foodcaches collection:
+        if (process.env.CLEAR_FOOD_CACHES === 'true') {
             const { deletedCount } = await FoodCache.deleteMany({});
+            console.log(`[FoodCache] Cleared ${deletedCount} docs`);
+        }
+        */
+
+        /* CODE FOR EMPTYING diaryentries collection:
+        if (process.env.CLEAR_DIARY_ENTRIES === 'true') {
+            const { deletedCount } = await DiaryEntry.deleteMany({});
             console.log(`[FoodCache] Cleared ${deletedCount} docs`);
         }
         */
