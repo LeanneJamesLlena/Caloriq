@@ -15,5 +15,5 @@ router.put('/:id', verifyAccess, putDiaryEntry);  //tested and working
 
 // DELETE /api/diary/:id
 router.delete('/:id', verifyAccess, deleteDiaryEntry);  //tested and working
-
+//sign
 export default router;
