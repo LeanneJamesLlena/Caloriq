@@ -61,6 +61,6 @@ export async function getHistoryRange({ userId, from, to }) {
         },
         { $sort: { date: 1 } },
     ]);
-    
+
     return rows; // sparse: only dates that have entries
 }
