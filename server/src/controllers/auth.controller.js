@@ -14,7 +14,11 @@ export async function register(req, res) {
     try {
         //get user's email and password from the request body
         const { email, password } = req.body;
-        // pass email and password to createUser function to create the user
+        // PASS THE ARGUMENTS AS OBJECT PROPERTIES
+        // MUCH BETTER BECAUSE IN THIS WAY ORDER DOESNT MATTER
+        // MEANING THAT password, email or email, password because the function will be using object destructuring
+        // email will be save in side email and password will be save inside password
+        // second thing is that the argument amount doesnt matter, so if the function is expecting 3 properties and you only pass down an object that contains 2 properties it will still work
         const user = await createUser({ email, password });
         res.status(201).json({
             message: "User created successfully!",

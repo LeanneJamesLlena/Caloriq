@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import routes from './routes/index.js';
 import { config } from './config/env.js';
+
+//initialize express application
 const app = express();
 
 
@@ -55,4 +57,3 @@ app.use((err, req, res, next) => {
 
 export default app;
 
-//sign
