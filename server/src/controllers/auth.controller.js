@@ -10,15 +10,10 @@ const refreshCookieOptions = {
     maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
+// register the user
 export async function register(req, res) {
     try {
-        //get user's email and password from the request body
         const { email, password } = req.body;
-        // PASS THE ARGUMENTS AS OBJECT PROPERTIES
-        // MUCH BETTER BECAUSE IN THIS WAY ORDER DOESNT MATTER
-        // MEANING THAT password, email or email, password because the function will be using object destructuring
-        // email will be save in side email and password will be save inside password
-        // second thing is that the argument amount doesnt matter, so if the function is expecting 3 properties and you only pass down an object that contains 2 properties it will still work
         const user = await createUser({ email, password });
         res.status(201).json({
             message: "User created successfully!",
@@ -30,15 +25,13 @@ export async function register(req, res) {
         
     }
 }
-
+// logs the user in
 export async function login(req, res) {
     try {
         const { email, password } = req.body;
-        //pass the email and password to verifyUser to check if the user exist with that kind of email and if the given password matches th epassword stored in database
         const user = await verifyUser(email, password);
         //when credentials are valid, give the user access token and refresh token
         const { accessToken, refreshToken } = await signTokens(user);
-        //User gets access token and refresh token correctly
         res.cookie(config.COOKIE_NAME, refreshToken, refreshCookieOptions);
         res.json({ accessToken, user: { id: user._id, email: user.email }});
     } catch (error) {

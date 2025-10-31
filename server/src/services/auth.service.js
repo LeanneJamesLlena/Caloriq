@@ -1,20 +1,19 @@
-//define the logic of: create user, verify login, sign tokens.
+//Auth controller's helper functions
 import bcrypt from 'bcrypt';
 import { User } from '../models/User.model.js';
 import { signAccessToken, signRefreshToken } from '../utils/jwt.js';
-//when this function is called pass in an object for instance {email: "..", password: "..."}
-//using object destructuring we save the values straight to variables, where variable=key of the value
+
+// Creates new user
 export async function createUser({ email, password }) {
-    //try to find user with the given email from the database
     const existing = await User.findOne({
         email: email
     })
     if (existing) {
         throw new Error('Email is already registered');
     }
-    //if the email isnt used then hash the given password
+    // hash the password using bcrypt inbuilt function .hash (never save the password in DB as string)
     const passwordHash = await bcrypt.hash(password, 10);
-    //create new user
+
     const newUser = await User.create({
         email: email,
         passwordHash: passwordHash,
@@ -22,6 +21,7 @@ export async function createUser({ email, password }) {
     return newUser;
 }
 
+// Verify that user exist in database and password correct
 export async function verifyUser(email, password) {
     const user = await User.findOne({
         email: email,
@@ -29,7 +29,7 @@ export async function verifyUser(email, password) {
     if (!user) {
         throw new Error('Invalid credentials');
     };
-    // using bcrypt inbuilt function .compare allows us to compare a string value password to hash value password
+    // using bcrypt inbuilt function .compare allows us to compare a string value and hash value
     const passwordMatched = await bcrypt.compare(password, user.passwordHash);
     if (!passwordMatched) {
         throw new Error('Invalid credentials');
@@ -37,7 +37,9 @@ export async function verifyUser(email, password) {
     return user;
 }
 
+// Returns back created and signed access and refresh token
 export async function signTokens(user) {
+    //build the payload
     const payload = {
         sub: String(user._id),
         email: user.email,

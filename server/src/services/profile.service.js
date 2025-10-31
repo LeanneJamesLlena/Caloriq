@@ -1,4 +1,4 @@
-// define the logic of getting User's target(Macros), Update Target(Macros),
+//Profile controller's helper functions
 import { User } from '../models/User.model.js';
 
 // Read current Targets (Macros) for a user

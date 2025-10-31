@@ -1,4 +1,4 @@
-//define the logic of food data fetching from Fdc
+//Food controller's helper functions
 import { FoodCache } from '../models/FoodCache.model.js';
 import { fdcSearchFoods, fdcGetFood } from '../integrations/fdc.client.js';
 import { config } from '../config/env.js';

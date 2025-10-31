@@ -1,4 +1,4 @@
-// services/history.service.js
+//History controller's helper functions
 import mongoose from 'mongoose';
 import { DiaryEntry } from '../models/DiaryEntry.model.js';
 import { toYMD } from '../utils/dates.js';

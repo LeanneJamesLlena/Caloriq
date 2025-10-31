@@ -1,16 +1,10 @@
+// Authentication logics
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env.js';
 
-// Sign the access token
+// Sign and create the access token
 export const signAccessToken = (payload) => {
     try {
-        /*
-        // DEBUG
-        console.log('--- SIGN ACCESS TOKEN DEBUG ---');
-        console.log('Payload:', payload);
-        console.log('Secret:', config.JWT_ACCESS_SECRET);
-        console.log('ExpiresIn:', config.ACCESS_TOKEN_EXPIRES);
-        */
         return jwt.sign(payload, config.JWT_ACCESS_SECRET, { 
         algorithm: 'HS256',
         expiresIn: config.ACCESS_TOKEN_EXPIRES,
@@ -21,7 +15,7 @@ export const signAccessToken = (payload) => {
     }
 };
 
-// Sign the refresh token
+// Sign and create the refresh token
 export const signRefreshToken = (payload) => {
     try {
         return jwt.sign(payload, config.JWT_REFRESH_SECRET, {

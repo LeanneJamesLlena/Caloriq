@@ -1,4 +1,4 @@
-// define the logic of displaying data in the diary
+//Diary controller's helper functions
 import { DiaryEntry } from '../models/DiaryEntry.model.js';
 import { getFoodByIdService } from './foods.service.js';
 import { toYMD } from '../utils/dates.js';
