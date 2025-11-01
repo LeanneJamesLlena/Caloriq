@@ -9,7 +9,7 @@ router.post('/register', register); //tested and working
 //POST /api/auth/login
 router.post('/login', login); //tested and workingx
 //POST /api/auth/refresh
-router.post('/refresh', readAndValidateRefresh, refresh); //tested and working
+router.post('/refresh', readAndValidateRefresh, refresh); //tested and working this part
 //POST /api/auth/logout
 router.post('/logout', logout); //tested and working
 

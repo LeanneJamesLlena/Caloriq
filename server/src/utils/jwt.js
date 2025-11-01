@@ -29,9 +29,10 @@ export const signRefreshToken = (payload) => {
 };
 
 // Verify access token
-export const verifyAccessToken = (token) => {
+export const verifyAccessToken = (accessToken) => {
     try {
-        return jwt.verify(token, config.JWT_ACCESS_SECRET);
+        // returns the decoded payload
+        return jwt.verify(accessToken, config.JWT_ACCESS_SECRET);
     } catch (error) {
         console.warn('Invalid or expired access token');
         throw new Error('Invalid access token');
@@ -39,9 +40,10 @@ export const verifyAccessToken = (token) => {
 };
 
 // Verify refresh token
-export const verifyRefreshToken = (token) => {
+export const verifyRefreshToken = (refreshToken) => {
     try {
-        return jwt.verify(token, config.JWT_REFRESH_SECRET);
+        // returns the decoded payload
+        return jwt.verify(refreshToken, config.JWT_REFRESH_SECRET);
     } catch (error) {
         console.warn('Invalid or expired refresh token');
         throw new Error('Invalid refresh token');
