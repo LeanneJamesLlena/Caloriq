@@ -9,5 +9,5 @@ router.get('/targets', verifyAccess, getMyTargets); //tested and working
 //PUT /api/profile/targets 
 router.put('/targets', verifyAccess, putMyTargets); //tested and working
 
-//sign that everything got pushed perfectly1.
+
 export default router;

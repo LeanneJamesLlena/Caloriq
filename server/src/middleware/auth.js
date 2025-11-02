@@ -17,8 +17,9 @@ export function verifyAccess(req, res, next) {
     try {
         //verify the token
         const payload = verifyAccessToken(accessToken);
+        // store properties of the user inside req.user
         req.user = { id: payload.sub, email: payload.email, tv: payload.tv };
-        //everythings good then continue , call next middleware or route handler
+        //call the route's second function
         next();
     } catch {
         return res.status(401).json({ error: 'Invalid or expired access token' });

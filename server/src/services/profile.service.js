@@ -1,7 +1,7 @@
 //Profile controller's helper functions
 import { User } from '../models/User.model.js';
 
-// Read current Targets (Macros) for a user
+// Read and return current Targets (Macros) for a user
 export async function getTargets(userId) {
     //get the the user and save it inside user. We are filtering using "select" the values we are getting. So we only want the values of the properties targets(macros->calories, protein, fiber.etc), timezone and email. Without this user object will have all the properties such as token, passwordHash, etc and we dont need those.
     const user = await User.findById(userId).select('targets timezone email');
