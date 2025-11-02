@@ -90,7 +90,7 @@ export async function updateEntry({ userId, entryId, grams, mealType }) {
     if (changed) await entry.save();
     return entry.toObject();
 }
-
+// Delete a certain meal entry
 export async function deleteEntry({ userId, entryId }) {
     const res = await DiaryEntry.deleteOne({ _id: entryId, userId });
     if (res.deletedCount === 0) {
@@ -100,7 +100,7 @@ export async function deleteEntry({ userId, entryId }) {
     }
     return { ok: true };
 }
-
+// returns template object of the nutrients set all to 0
 function blankTotals() {
     return { kcal: 0, protein: 0, carbs: 0, sugars: 0, fiber: 0, fat: 0, satFat: 0, sodium: 0 };
 }

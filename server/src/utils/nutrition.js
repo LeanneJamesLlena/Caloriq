@@ -32,7 +32,7 @@ export function addN(a, b) {
     };
 }
 
-
+//cleans up and standardizes nutrient values
 export function normalizeN(n) {
     return {
         kcal:   Math.round(n.kcal || 0),

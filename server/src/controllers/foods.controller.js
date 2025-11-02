@@ -13,7 +13,7 @@ export async function searchFoods(req, res) {
     }
 }
 
-// returns information of a specific food
+// returns informations of a specific food
 export async function getFoodById(req, res) {
     try {
         const id = Number(req.params.fdcId);

@@ -1,5 +1,8 @@
+// define the logics of the routes inside history.routes.js
 import { getHistoryRange } from '../services/history.service.js';
 
+
+// returns each macro's total of a certain date
 export async function getHistory(req, res) {
     try {
         const { from, to } = req.query;

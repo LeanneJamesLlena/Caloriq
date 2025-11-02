@@ -1,4 +1,4 @@
-//   date helpers (timezones, YYYY-MM-DD)
+// date helpers (timezones, YYYY-MM-DD)
 import { DateTime } from 'luxon';
 import { config } from '../config/env.js';
 

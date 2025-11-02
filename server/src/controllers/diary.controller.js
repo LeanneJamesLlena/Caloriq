@@ -11,7 +11,7 @@ export async function getDiaryDay(req, res) {
     }
 }
 
-//add new meal to the user's diary(filtered by date)
+// add new meal to the user's diary(filtered by date)
 export async function postDiaryEntry(req, res) {
     try {
         const { date, mealType, fdcId, grams, label } = req.body;
@@ -21,7 +21,9 @@ export async function postDiaryEntry(req, res) {
         res.status(error.status || 500).json({ error: error.message || 'Failed to add entry' });
     }
 }
-
+// update an existing meal entry
+// allows changing the portion size and moving a meal from one category to another
+// for instance move a certain meal from breakfast to lunch category
 export async function putDiaryEntry(req, res) {
     try {
         const entry = await updateEntry({
@@ -35,7 +37,7 @@ export async function putDiaryEntry(req, res) {
         res.status(error.status || 500).json({ error: error.message || 'Failed to update entry' });
     }
 }
-
+// deletes a certain meal
 export async function deleteDiaryEntry(req, res) {
     try {
         const result = await deleteEntry({ userId: req.user.id, entryId: req.params.id });

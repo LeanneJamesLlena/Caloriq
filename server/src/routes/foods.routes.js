@@ -7,8 +7,9 @@ const router = express.Router();
 // Lighter rate limit specifically for search endpoints
 // this will limit the clients request
 const searchLimiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
-
+// GET /api/foods/search
 router.get('/search', searchLimiter, searchFoods); //tested and working
+// GET /api/foods/:fcId
 router.get('/:fdcId', getFoodById); //tested and working, ONE PROBLEM: SOME ITEM's SUGAR MACRO IS INACCURATE
 
 export default router;
