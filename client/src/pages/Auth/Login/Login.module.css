@@ -1,0 +1,57 @@
+/* ---------- Typography ---------- */
+.title {
+    font-size: var(--fs-xl);           
+    font-weight: 700;                 
+    letter-spacing: -0.02em;          
+}
+
+.subtitle {
+    margin-top: 4px;                  
+    font-size: var(--fs-sm);           
+    color: var(--color-muted);        
+}
+
+/* ---------- Form layout ---------- */
+.form {
+    margin-top: var(--sp-6);           
+    display: grid;
+    gap: var(--sp-4);                 
+}
+
+.row {
+    display: grid;
+    gap: var(--sp-2);                 
+}
+
+.label {
+    display: block;
+    font-size: var(--fs-sm);
+    font-weight: 600;                 
+    color: #334155;                   
+}
+
+/* ---------- Password field ---------- */
+.passLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;    
+}
+
+.toggle {
+    background: transparent;          
+    border: none;
+    padding: 0;
+    color: var(--color-muted);        
+    cursor: pointer;                   
+}
+
+/* ---------- Buttons & links ---------- */
+.actions {
+    margin-top: var(--sp-2);          
+}
+
+.link {
+    color: var(--color-text);          
+    font-weight: 600;                 
+    text-decoration: underline;        
+}

@@ -1,0 +1,5 @@
+* { box-sizing: border-box; }
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; }
+input, button { outline: none; }
+a { color: inherit; }

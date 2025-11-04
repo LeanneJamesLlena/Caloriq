@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Login from '../pages/Auth/Login';
-import Register from '../pages/Auth/Register';
-import Diary from '../pages/Diary'; 
-import History from '../pages/History';
-import Settings from '../pages/Settings';
-import NotFound from '../pages/NotFound';
+import Login from '../pages/Auth/Login/Login';
+import Register from '../pages/Auth/Register/Register';
+import Diary from '../pages/Diary/Diary'; 
+import History from '../pages/History/History';
+import Settings from '../pages/Settings/Settings';
+import NotFound from '../pages/NotFound/NotFound';
 import useAuthStore from '../store/authStore';
 
 /*
