@@ -1,0 +1,129 @@
+/* ---------- Full-screen modal backdrop ---------- */
+.backdrop {
+    position: fixed;
+    inset: 0;                                       
+    background: rgba(15,23,42,.32);                
+    display: grid;
+    place-items: end center;                        
+    padding: var(--sp-4);
+    z-index: 50;                                   
+}
+
+/* ---------- Bottom sheet panel ---------- */
+.sheet {
+    width: 100%;
+    max-width: 560px;                              
+    border-radius: 16px;
+    padding: var(--sp-6);
+    margin-bottom: var(--sp-2);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+}
+
+/* ---------- Sheet header row ---------- */
+.header {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;                 
+    margin-bottom: var(--sp-4);
+}
+
+/* ---------- Field wrapper ---------- */
+.field {
+    margin-top: var(--sp-4);
+}
+
+/* ---------- Field label ---------- */
+.label {
+
+    display: block;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+/* ---------- Secondary hint text ---------- */
+.hint {
+
+    margin-top: 6px;
+    font-size: var(--fs-sm);
+    color: var(--color-muted);
+}
+
+/* ---------- Search results container ---------- */
+.results {
+
+    margin-top: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    max-height: 240px;                             
+    overflow: auto;
+    background: #fff;
+    padding: 6px;
+}
+
+/* ---------- Result button (each row) ---------- */
+.resultBtn {
+
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 10px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* ---------- Result hover state ---------- */
+.resultBtn:hover {
+
+    background: #f1f5f9;
+}
+
+/* ---------- Result primary/secondary text ---------- */
+.resultName { font-weight: 600; }
+.resultSub  { font-size: var(--fs-sm); color: var(--color-muted); }
+
+/* ---------- Grams input row ---------- */
+.gramsRow {
+    display: grid;
+    grid-template-columns: auto 1fr auto;           
+    gap: var(--sp-2);
+}
+
+/* ---------- Selection preview box ---------- */
+.preview { 
+    margin-top: var(--sp-4);
+    padding: var(--sp-4);
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+/* ---------- Preview rows and grid of macros ---------- */
+.previewRow  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.previewGrid { display: grid; grid-template-columns: repeat(4, auto); gap: var(--sp-4); }
+
+/* ---------- Action buttons row ---------- */
+.actions {
+    margin-top: var(--sp-6);
+    display: flex;
+    justify-content: flex-end;                     
+}
+
+/* ---------- Responsive adjustments (small screens) ---------- */
+@media (max-width: 560px) {
+
+    .sheet {
+        margin-bottom: 0;                             
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .previewGrid {
+        grid-template-columns: repeat(2, auto);       
+        row-gap: 6px;
+    }
+}

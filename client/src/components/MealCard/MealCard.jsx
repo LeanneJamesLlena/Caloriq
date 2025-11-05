@@ -1,12 +1,13 @@
 import { useState, useMemo, useId } from 'react';
 import s from './MealCard.module.css';
 
-export default function MealCard({ title, items = [], onAddClick }) {
+export default function MealCard({ title, items = [], onAddClick, onEditClick, onDeleteClick }) {
 
     const [open, setOpen] = useState(false);
     const panelId = useId();
 
     // Compute per-meal nutrient totals (cached with useMemo)
+    // useMemo avoids recalculating on every render unless items changes
     const totals = useMemo(() => {
         const acc = { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
         for (const it of items) {
@@ -20,7 +21,7 @@ export default function MealCard({ title, items = [], onAddClick }) {
     }, [items]);
 
     const toggle = () => setOpen((v) => !v);
-
+     //Keyboard accessibility for header
     const onHeaderKeyDown = (e) => {
         if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
             e.preventDefault();
@@ -79,8 +80,8 @@ export default function MealCard({ title, items = [], onAddClick }) {
                     Fiber {Math.round(it.fiber || 0)}g
                   </div>
                   <div className={s.actions}>
-                    <button type="button" className="btn btn-outline">Edit</button>
-                    <button type="button" className="btn btn-outline">Delete</button>
+                    <button type="button" className="btn btn-outline" onClick={() => onEditClick?.(it)}>Edit</button>
+                    <button type="button" className="btn btn-outline" onClick={() => onDeleteClick?.(it)}>Delete</button>
                   </div>
                 </li>
               ))}
