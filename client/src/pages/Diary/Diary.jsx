@@ -1,22 +1,79 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
 import DatePicker from '../../components/DatePicker/DatePicker';
 import MacroBar from '../../components/MacroBar/MacroBar';
 import MealCard from '../../components/MealCard/MealCard';
+import AddFoodSheet from '../../components/AddFoodSheet/AddFoodSheet';
 import useDiaryStore from '../../store/diaryStore';
-import { toYMD } from '../../utils/date';
+import { deleteItem } from '../../services/diary.api';
 import s from './Diary.module.css';
 
-export default function Diary() {
+// Normalize a food item from API into the internal shape used in the app
+function normalizeItem(it) {
+  const n = it?.nutrients || {};
+  return {
+    _id: it._id,
+    name: it.label || it.name || 'Food',
+    grams: it.grams ?? 0,
+    kcal: Math.round(n.kcal ?? 0),
+    protein: Number(n.protein ?? 0),
+    carbs: Number(n.carbs ?? 0),
+    fat: Number(n.fat ?? 0),
+    fiber: Number(n.fiber ?? 0),
+    mealType: it.mealType,   // "breakfast" | "lunch" | "dinner" | "snack"
+    fdcId: it.fdcId,
+  };
+}
+// Normalize meal sections from API data into Breakfast/Lunch/Dinner/Snack arrays
+function normalizeMeals(apiData) {
+  const empty = { Breakfast: [], Lunch: [], Dinner: [], Snack: [] };
+  const m = apiData?.meals;
+  if (!m) return empty;
 
+  const pick = (sec) => (Array.isArray(sec?.items) ? sec.items.map(normalizeItem) : []);
+  return {
+    Breakfast: pick(m.breakfast),
+    Lunch: pick(m.lunch),
+    Dinner: pick(m.dinner),
+    Snack: pick(m.snack), 
+  };
+}
+// Capitalize the first letter of a meal string ("breakfast" → "Breakfast")
+const capMeal = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+
+
+export default function Diary() {
+  // get actions from useDiaryStore
   const { date, setDate, targets, data, loading, error, fetchAll } = useDiaryStore();
-  // Refetch diary data whenever the selected date changes
-  useEffect(() => { fetchAll(); }, [date]); 
-  // Fallbacks to prevent undefined values before data loads
+   //Local UI state
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetMeal, setSheetMeal] = useState('Breakfast');
+  const [editItem, setEditItem] = useState(null);
+
+ // Fetch diary data when date changes
+  useEffect(() => { fetchAll(); }, [date]);
+
   const t = targets || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
   const day = data?.dayTotals || { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
-  const meals = data?.meals || { Breakfast: [], Lunch: [], Dinner: [], Snack: [] };
-  // Derived values for ring display
+  const meals = normalizeMeals(data);
+  // Open sheet to add a new item
+  const openAdd = (meal) => { setEditItem(null); setSheetMeal(meal); setSheetOpen(true); };
+  const openEdit = (item) => {
+    setEditItem(item);
+    // item.mealType is lowercase from API; capitalize for the sheet select
+    setSheetMeal(capMeal(item.mealType));
+    setSheetOpen(true);
+  };
+  // Delete a food item and refresh data
+  const onDelete = async (item) => {
+    try {
+      await deleteItem(item._id);
+      await fetchAll();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+ // Totals 
   const remaining = Math.max(0, (t.calories || 0) - (day.kcal || 0));
   const eaten = day.kcal || 0;
 
@@ -61,10 +118,26 @@ export default function Diary() {
 
         {/* Meals */}
         <div className={s.meals}>
-          <MealCard title="Breakfast" items={meals.Breakfast} onAddClick={() => {/* open add sheet later */}} />
-          <MealCard title="Lunch"     items={meals.Lunch}     onAddClick={() => {}} />
-          <MealCard title="Dinner"    items={meals.Dinner}    onAddClick={() => {}} />
-          <MealCard title="Snacks"    items={meals.Snack}     onAddClick={() => {}} />
+          <MealCard title="Breakfast" items={meals.Breakfast}
+            onAddClick={() => openAdd('Breakfast')}
+            onEditClick={openEdit}
+            onDeleteClick={onDelete}
+          />
+          <MealCard title="Lunch" items={meals.Lunch}
+            onAddClick={() => openAdd('Lunch')}
+            onEditClick={openEdit}
+            onDeleteClick={onDelete}
+          />
+          <MealCard title="Dinner" items={meals.Dinner}
+            onAddClick={() => openAdd('Dinner')}
+            onEditClick={openEdit}
+            onDeleteClick={onDelete}
+          />
+          <MealCard title="Snack" items={meals.Snack}
+            onAddClick={() => openAdd('Snack')}
+            onEditClick={openEdit}
+            onDeleteClick={onDelete}
+          />
         </div>
       </main>
 
@@ -74,6 +147,15 @@ export default function Diary() {
         <a href="/history" className={s.navItem}>History</a>
         <a href="/settings" className={s.navItem}>Settings</a>
       </nav>
+
+      {/* Add/Edit Sheet */}
+      <AddFoodSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        date={date}
+        defaultMeal={sheetMeal}
+        editItem={editItem}
+      />
     </>
   );
 }
