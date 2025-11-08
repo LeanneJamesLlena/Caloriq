@@ -7,6 +7,7 @@ import MealCard from '../../components/MealCard/MealCard';
 import AddFoodSheet from '../../components/AddFoodSheet/AddFoodSheet';
 import useDiaryStore from '../../store/diaryStore';
 import { deleteItem } from '../../services/diary.api';
+import DaySummary from '../../components/DaySummary/DaySummary';
 import s from './Diary.module.css';
 
 // Normalize a food item from API into the internal shape used in the app
@@ -88,34 +89,8 @@ export default function Diary() {
         {loading && <div className="card" style={{ padding: 16 }}>Loading…</div>}
         {error && !loading && <div className="alert" style={{ marginBottom: 16 }}>{error}</div>}
 
-        {/* Totals Card */}
-        <section className={`card ${s.totals}`}>
-          <div className={s.ringWrap}>
-            <div
-              className={s.ring}
-              style={{
-                background: `conic-gradient(var(--color-accent) ${Math.min(100, (t.calories>0? (eaten/t.calories)*100:0))}%,
-                              #e2e8f0 0)`,
-              }}
-            >
-              <div className={s.ringInner}>
-                <div className={s.big}>{remaining}</div>
-                <div className="text-muted" style={{ fontSize: 12 }}>Remaining</div>
-              </div>
-            </div>
-            <div className={s.sideNums}>
-              <div><strong>{eaten}</strong><span className="text-muted"> Eaten</span></div>
-              <div><strong>{t.calories || 0}</strong><span className="text-muted"> Target</span></div>
-            </div>
-          </div>
 
-          <div className={s.macros}>
-            <MacroBar label="Protein" value={Math.round(day.protein||0)} target={t.protein||0} />
-            <MacroBar label="Carbs"   value={Math.round(day.carbs||0)}   target={t.carbs||0} />
-            <MacroBar label="Fat"     value={Math.round(day.fat||0)}     target={t.fat||0} />
-            <MacroBar label="Fiber"   value={Math.round(day.fiber||0)}   target={t.fiber||0} />
-          </div>
-        </section>
+        <DaySummary eaten={day.kcal || 0} targets={t} macros={day} />
 
         {/* Meals */}
         <div className={s.meals}>

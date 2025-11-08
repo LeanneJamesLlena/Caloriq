@@ -1,34 +1,25 @@
-/* ---------- Macro bar container ---------- */
-.row {
-    display: grid;
-    gap: 6px; 
+/* ---------- Macro bar row container ---------- */
+.row { margin: 14px 0; }
+
+/* ---------- Header above the bar (label + numbers) ---------- */
+.top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.label { font-weight:700; letter-spacing:-.01em; }
+.right { color:#64748b; font-weight:600; }
+
+/* ---------- Background track of the bar ---------- */
+.bar {
+    height:10px;
+    width:100%;
+    background:#eef2f7;
+    border-radius:999px;
+    overflow:hidden;
 }
 
-/* ---------- Top row: label + values ---------- */
-.top {
-    display: flex;
-    justify-content: space-between; 
-    font-size: var(--fs-sm);
-}
-
-/* ---------- Nutrient label ---------- */
-.label {
-    font-weight: 600;
-    color: #334155; 
-}
-
-/* ---------- Progress bar track ---------- */
-.track {
-    height: 8px;
-    border-radius: 999px; 
-    background: #eef2f6;  
-    overflow: hidden;    
-}
-
-/* ---------- Progress bar fill ---------- */
+/* ---------- Filled portion (progress) ---------- */
 .fill {
-    height: 100%;
-    background: var(--color-accent); 
-    border-radius: 999px;
-    transition: width 0.25s ease;   
+    height:100%;
+    background:#0ea5e9;
+    width:0%;
+    border-radius:999px;
+    transition: width .35s ease;
 }
