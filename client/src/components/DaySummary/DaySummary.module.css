@@ -1,0 +1,55 @@
+/* Card layout */
+.card { padding: 28px 28px 20px; }
+
+.grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 32px;                
+    align-items: start;
+}
+
+/* Ring area */
+.ringWrap {
+    position: relative;
+    display: grid;
+    justify-items: center;     
+    gap: 10px;                 
+}
+.svg { display: block; }
+.ring { transition: stroke-dasharray .45s ease; }
+
+.center .big { font-size: 36px; font-weight: 800; letter-spacing: -.02em; }
+.center .sub { color: #64748b; font-weight: 600; margin-top: 2px; }
+
+/* Eaten / Target row under ring */
+.meta {
+    display: flex;
+    gap: 16px;
+    color: #0f172a;
+    font-weight: 700;
+}
+.meta span { color: #64748b; font-weight: 600; margin-left: 6px; }
+
+/* Right column: macro bars block */
+.right {
+    width: 100%;
+    display: grid;
+    gap: 16px;                
+}
+/* add spacing before Breakfast card */
+.card {
+  padding: 28px 28px 20px;
+  margin-bottom: 16px;   
+}
+
+/* MacroBar overrides  */
+:global(.MacroBar_row) { margin: 8px 0; }  
+
+/* Tighten small screens */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .card { padding: 20px 16px; }
+}
