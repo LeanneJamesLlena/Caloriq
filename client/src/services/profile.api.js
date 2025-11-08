@@ -4,7 +4,7 @@ export async function getTargets() {
     const { data } = await api.get('/profile/targets');
     return data.targets;            
 }
-// Update user's nutrition targets
+// Update user's nutrition targetss
 export async function updateTargets(payload) {
     const { data } = await api.put('/profile/targets', payload);
     return data.targets ?? data;      
