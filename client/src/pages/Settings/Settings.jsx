@@ -69,8 +69,8 @@ export default function Settings() {
       try {
         setLoading(true);
         setFetchErr('');
-        const data = await getTargets();
-        const t = data?.targets || {};
+ 
+        const t = await getTargets();     // now already flat
         if (!alive) return;
         setForm({
           calories: Number(t.calories || 0),
