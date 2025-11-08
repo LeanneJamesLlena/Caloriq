@@ -1,0 +1,37 @@
+/* ---------- Footer navigation container ---------- */
+.nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+
+    padding: 10px 12px;
+    background: #fff;
+    border-top: 1px solid var(--color-border);
+}
+
+/* ---------- Navigation links ---------- */
+.link {
+    min-width: 96px;
+    text-align: center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+    color: var(--color-text);
+    font-weight: 600;
+    box-shadow: var(--shadow-xs);
+}
+
+/* ---------- Hover state ---------- */
+.link:hover { background: #eef2f7; }
+
+/* ---------- Active state ---------- */
+.active {
+    background: #0ea5e9; 
+    color: #fff;        
+}

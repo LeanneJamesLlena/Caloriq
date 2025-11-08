@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Header from '../../components/Header/Header';
+import Footer from '../../components/Footer/Footer';
 import DatePicker from '../../components/DatePicker/DatePicker';
 import MacroBar from '../../components/MacroBar/MacroBar';
 import MealCard from '../../components/MealCard/MealCard';
@@ -141,13 +142,8 @@ export default function Diary() {
         </div>
       </main>
 
-      {/* Bottom Nav */}
-      <nav className={s.bottomNav}>
-        <a href="/diary" className={s.navItem} aria-current="page">Diary</a>
-        <a href="/history" className={s.navItem}>History</a>
-        <a href="/settings" className={s.navItem}>Settings</a>
-      </nav>
-
+      <Footer/>
+      
       {/* Add/Edit Sheet */}
       <AddFoodSheet
         open={sheetOpen}

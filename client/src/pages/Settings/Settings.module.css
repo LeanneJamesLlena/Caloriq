@@ -1,0 +1,61 @@
+/* ---------- Page container ---------- */
+.page { padding: 24px 0 80px; }
+
+/* ---------- Headings ---------- */
+.h1 { font-size: 28px; font-weight: 800; margin-bottom: 16px; }
+
+/* ---------- Cards ---------- */
+.card { padding: 20px; margin-bottom: 16px; }
+.cardHeader { margin-bottom: 12px; }
+.h2 { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+
+/* ---------- Form grids ---------- */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+/* ---------- Form fields ---------- */
+.field { display: grid; gap: 6px; }
+.fieldFull { grid-column: 1 / -1; display: grid; gap: 6px; }
+.label { font-size: 12px; font-weight: 600; color: #334155; }
+
+/* ---------- Actions row ---------- */
+.actions {
+  display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px;
+}
+
+/* ---------- Segmented control ---------- */
+.seg { display: flex; gap: 6px; flex-wrap: wrap; }
+.segBtn {
+  border: 1px solid var(--color-border);
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer; 
+}
+/* ---------- Active segment ---------- */
+.segActive { background: #0ea5e9; color: #fff; border-color: #0ea5e9; }
+.segBtn:hover {
+  filter: brightness(0.98);
+}
+
+/* ---------- Calculator preview ---------- */
+.preview {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+  background: #f8fafc;
+}
+.previewRow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.previewGrid { display: grid; grid-template-columns: repeat(4, auto); gap: 14px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .grid4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .grid2 { grid-template-columns: 1fr; }
+  .grid4 { grid-template-columns: 1fr; }
+  .previewGrid { grid-template-columns: repeat(2, auto); row-gap: 8px; }
+}
