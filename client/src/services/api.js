@@ -28,7 +28,7 @@ function attachAuth(cfg) {
     return cfg;
 }
 
-// Refresh access token using HTTP-only cookie
+// Refresh access token using HTTP-only cookie /
 async function refreshAccessToken() {
 
     if (!refreshPromise) {
