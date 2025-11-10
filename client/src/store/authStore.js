@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { loginApi, registerApi, logoutApi } from '../services/auth.api';
 import { setAccessToken } from '../services/api';
 
-// Try to rehydrate user from localStorage on load
+// Try to rehydrate user from localStorage on loadd
 const storedUser = (() => {
     try { 
         return JSON.parse(localStorage.getItem('user')); 
