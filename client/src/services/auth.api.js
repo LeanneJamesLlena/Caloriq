@@ -14,7 +14,7 @@ export async function loginApi({ email, password }) {
     
     return data.user;
 }
-// Log out the user and clear tokens from client + server
+// Log out the user and clear tokens from client + server /
 export async function logoutApi() {
     try {
         await api.post('/auth/logout'); // clears refresh cookie server-side
