@@ -19,3 +19,10 @@ export function prettyDate(date) {
         day: 'numeric',
     });
 }
+
+// Parse "YYYY-MM-DD" into a Date at local midnight (no UTC shift)
+export function parseYMDLocal(ymd) {
+    if (!ymd) return null;
+    const [y, m, d] = ymd.split('-').map(Number);
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+}
