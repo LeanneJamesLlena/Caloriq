@@ -1,0 +1,114 @@
+/* ---------- Macro tiles container ---------- */
+.tilesCard { }
+
+/* ---------- Section header ---------- */
+.tilesHeader {
+    margin-bottom: 8px;
+}
+
+/* ---------- Grid layout for macro rows and weekdays ---------- */
+.tilesGrid {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr); 
+    gap: 6px;
+    align-items: center;
+}
+
+/* ---------- Top-left corner cell  ---------- */
+.corner { }
+
+/* ---------- Header styles for column and row labels ---------- */
+.colHead,
+.rowHead {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* ---------- Individual macro cell ---------- */
+.cell {
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+/* ---------- Macro cell status colors ---------- */
+.ok      { background: #ecfeff; }  /* within range (✓) */
+.under   { background: #fff7ed; }  /* under target (↓) */
+.over    { background: #fee2e2; }  /* over target (↑) */
+.neutral { background: #f1f5f9; }  /* no target (–) */
+
+/* ---------- Note text below grid ---------- */
+.note {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+/* ---------- Responsive adjustments ---------- */
+@media (max-width: 900px) {
+    .tilesGrid {
+        grid-template-columns: 60px repeat(7, 1fr);
+        gap: 4px;
+    }
+}
+
+/* ---------- Hover and focus feedback ---------- */
+.cell {
+    position: relative;
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+.cell:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 1px 0 rgba(2,6,23,0.04);
+}
+.cell:focus-visible {
+    outline: 2px solid rgba(14,165,233,.35);
+    outline-offset: 2px;
+}
+
+/* ---------- Tooltip bubble (uses data-tip attribute) ---------- */
+.cell[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(6px);
+    opacity: 0;
+    pointer-events: none;
+    background: #0f172a;
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 6px 20px rgba(0,0,0,.16);
+    transition: opacity .15s ease, transform .15s ease;
+    z-index: 3;
+}
+
+/* ---------- Tooltip caret ---------- */
+.cell[data-tip]::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 4px);
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #0f172a; /* small caret triangle */
+    opacity: 0;
+    transition: opacity .15s ease;
+    z-index: 3;
+}
+
+/* ---------- Tooltip visibility on hover or keyboard focus ---------- */
+.cell:hover::after,
+.cell:hover::before,
+.cell:focus-visible::after,
+.cell:focus-visible::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
