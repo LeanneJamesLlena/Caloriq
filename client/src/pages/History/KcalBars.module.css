@@ -1,0 +1,184 @@
+/* ---------- Main calorie chart container ---------- */
+.kcalCard {
+    margin-top: 10px; /* spacing above chart card */
+}
+
+/* ---------- Header section (title + legend) ---------- */
+.kcalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.kcalTitle {
+    font-weight: 700;
+}
+.legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #64748b;
+}
+.swatchLine {
+    width: 16px;
+    height: 2px;
+    background: #0ea5e9;
+    display: inline-block;
+    border-radius: 2px;
+}
+.swatchBar {
+    width: 10px;
+    height: 10px;
+    background: #0ea5e9;
+    display: inline-block;
+    border-radius: 2px;
+}
+
+/* ---------- Outer chart frame ---------- */
+.kcalChart {
+    position: relative;
+    height: 228px;               
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 40px 12px 32px;     
+    overflow: hidden;            
+}
+
+/* ---------- Inner plotting grid for bars ---------- */
+.plot {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 12px;      
+    bottom: 28px;   
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    align-items: end; 
+}
+
+/* ---------- Responsive sizes ---------- */
+@media (max-width: 900px) {
+    .kcalChart {
+        height: 190px;
+        padding: 30px 10px 28px;
+    }
+    .plot {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+        bottom: 26px;
+        gap: 8px;
+    }
+}
+@media (max-width: 600px) {
+    .kcalChart {
+        height: 160px;
+        padding: 26px 8px 24px;
+    }
+    .plot {
+        left: 8px;
+        right: 8px;
+        top: 8px;
+        bottom: 22px;
+        gap: 6px;
+    }
+}
+
+/* ---------- Target line across chart ---------- */
+.targetLine {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0ea5e9;
+    opacity: 0.9;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ---------- Bar wrapper (clickable area) ---------- */
+.barWrap {
+    position: relative;
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    z-index: 1;
+    outline: none;
+}
+.barWrap:focus-visible .bar {
+    box-shadow: 0 0 0 3px rgba(14,165,233,.25);
+}
+
+/* ---------- Actual calorie bar ---------- */
+.bar {
+    width: 100%;
+    background: #0ea5e9;
+    height: 0;
+    border-radius: 10px;
+    box-shadow: var(--shadow-xs);
+    transition: height .3s ease, transform .2s ease;
+}
+.barWrap:hover .bar {
+    transform: translateY(-1px);
+}
+
+/* ---------- Day label under each bar ---------- */
+.barLabel {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -22px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* ---------- Tooltip (default position above) ---------- */
+.tooltip {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease;
+    z-index: 3;
+}
+
+/* ---------- Tooltip below tall bars ---------- */
+.tooltipBelow {
+    transform: translateX(-50%) translateY(-6px);
+}
+
+/* ---------- Tooltip visibility on hover/focus ---------- */
+.barWrap:hover .tooltip,
+.barWrap:focus-visible .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+.barWrap:hover .tooltipBelow,
+.barWrap:focus-visible .tooltipBelow {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- Tooltip content box ---------- */
+.tooltipInner {
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: #0f172a;
+    color: #fff;
+    font-size: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.16);
+    white-space: nowrap;
+}
+
+/* ---------- Tooltip subtext (date) ---------- */
+.tooltipDate {
+    opacity: .8;
+    font-size: 11px;
+}
