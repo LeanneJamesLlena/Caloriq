@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom'; 
+import { toYMD, parseYMDLocal } from '../../utils/date'; 
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import DatePicker from '../../components/DatePicker/DatePicker';
@@ -10,9 +12,10 @@ import { deleteItem } from '../../services/diary.api';
 import DaySummary from '../../components/DaySummary/DaySummary';
 import s from './Diary.module.css';
 
-// Normalize a food item from API into the internal shape used in the app
+// Converts a raw API item into javascript object
 function normalizeItem(it) {
   const n = it?.nutrients || {};
+
   return {
     _id: it._id,
     name: it.label || it.name || 'Food',
@@ -26,7 +29,7 @@ function normalizeItem(it) {
     fdcId: it.fdcId,
   };
 }
-// Normalize meal sections from API data into Breakfast/Lunch/Dinner/Snack arrays
+// Groups API meal data into Breakfast/Lunch/Dinner/Snack arrays
 function normalizeMeals(apiData) {
   const empty = { Breakfast: [], Lunch: [], Dinner: [], Snack: [] };
   const m = apiData?.meals;
@@ -40,29 +43,49 @@ function normalizeMeals(apiData) {
     Snack: pick(m.snack), 
   };
 }
-// Capitalize the first letter of a meal string ("breakfast" → "Breakfast")
+
+// Turns "breakfast" → "Breakfast"
 const capMeal = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 
 export default function Diary() {
+  const location = useLocation(); 
+  const navigate = useNavigate(); 
+
   // get actions from useDiaryStore
   const { date, setDate, targets, data, loading, error, fetchAll } = useDiaryStore();
-   //Local UI state
+  //Local UI state
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetMeal, setSheetMeal] = useState('Breakfast');
   const [editItem, setEditItem] = useState(null);
 
+  // update the Diary date accordingly, then clear the query.
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const qd = params.get('date');
+    if (!qd) return;
+
+    const next = parseYMDLocal(qd);
+    if (next && toYMD(next) !== toYMD(date)) {
+      setDate(next); 
+    }
+
+    navigate(location.pathname, { replace: true });
+  }, [location.search, date, setDate, navigate, location.pathname]);
+
+
  // Fetch diary data when date changes
   useEffect(() => { fetchAll(); }, [date]);
-
+  // Fallbacks to avoid undefined values in UI
   const t = targets || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
   const day = data?.dayTotals || { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
   const meals = normalizeMeals(data);
-  // Open sheet to add a new item
+
+  // Open sheet to add a new meal
   const openAdd = (meal) => { setEditItem(null); setSheetMeal(meal); setSheetOpen(true); };
+  // Open sheet to edit a meal
   const openEdit = (item) => {
     setEditItem(item);
-    // item.mealType is lowercase from API; capitalize for the sheet select
     setSheetMeal(capMeal(item.mealType));
     setSheetOpen(true);
   };
@@ -75,7 +98,8 @@ export default function Diary() {
       console.error(e);
     }
   };
- // Totals 
+
+  // Compute totals for the summary bar
   const remaining = Math.max(0, (t.calories || 0) - (day.kcal || 0));
   const eaten = day.kcal || 0;
 
