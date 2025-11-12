@@ -132,7 +132,7 @@ export default function Register() {
         </p>
       </div>
 
-      <p className="page-foot">© {new Date().getFullYear()} Calorie Tracker</p>
+      <p className="page-foot">© {new Date().getFullYear()} Calorie Tracker - Built by Leanne James Llena</p>
     </div>
   );
 }
