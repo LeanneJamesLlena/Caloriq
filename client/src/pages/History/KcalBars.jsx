@@ -25,6 +25,7 @@ export default function KcalBars({ days, target = 0, onBarClick }) {
 
   return (
     <div className={s.kcalCard}>
+    {/* ---------- Header (title + legend) ---------- */}
       <div className={s.kcalHeader}>
         <div className={s.kcalTitle}>Weekly calories</div>
         <div className={s.legend}>
@@ -33,11 +34,12 @@ export default function KcalBars({ days, target = 0, onBarClick }) {
         </div>
       </div>
 
-      {/* Outer frame with padding; inner .plot is the true plotting area */}
+      {/* ---------- Bar chart plot area ---------- */}
       <div className={s.kcalChart} aria-label="Weekly calories chart">
         <div className={s.plot}>
           <div className={s.targetLine} style={{ bottom: `${targetPct}%` }} aria-hidden />
-
+          
+          {/* One bar per day (Mon–Sun) */}
           {days.map((d, i) => {
             const pct = Math.min(100, Math.round(((d.kcal || 0) / displayMax) * 100));
             const flip = pct > 80; // flip earlier so tooltip never overflows the top
@@ -51,8 +53,11 @@ export default function KcalBars({ days, target = 0, onBarClick }) {
                 aria-label={`${d.date}: ${d.kcal} kcal`}
                 onClick={() => onBarClick?.(d.date)}
                 type="button"
-              >
+              > 
+                {/* Vertical bar */}
                 <div className={s.bar} style={{ height: `${pct}%` }} />
+
+                 {/* Label under each bar */}
                 <div className={s.barLabel}>{label}</div>
 
                 {/* Tooltip — above by default, flips below when bar is very tall */}
@@ -60,8 +65,8 @@ export default function KcalBars({ days, target = 0, onBarClick }) {
                   className={`${s.tooltip} ${flip ? s.tooltipBelow : ''}`}
                   style={{
                     bottom: flip
-                      ? `calc(${pct}% - 8px)`    // inside plot, just below the cap
-                      : `calc(${pct}% + 26px)`   // above the cap
+                      ? `calc(${pct}% - 8px)`    
+                      : `calc(${pct}% + 26px)`   
                   }}
                   role="tooltip"
                 >

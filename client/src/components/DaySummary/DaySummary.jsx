@@ -2,25 +2,32 @@ import MacroBar from '../MacroBar/MacroBar';
 import s from './DaySummary.module.css';
 
 export default function DaySummary({ eaten = 0, targets = {}, macros = {} }) {
+    // --- Basic calculations ---
     const kcalTarget = Math.max(0, Number(targets.calories) || 0);
     const kcalEaten  = Math.max(0, Number(eaten) || 0);
     const remaining  = Math.max(0, kcalTarget - kcalEaten);
+    
     // Progress 0–100%
     const pct = kcalTarget > 0 ? Math.min(1, kcalEaten / kcalTarget) : 0;
-    // Simple ring setup
+    // --- Circle ring setup for calorie progress ---
     const size = 160;
     const stroke = 14;
     const r = (size - stroke) / 2;
     const c = 2 * Math.PI * r;
     const dash = c * pct;
-
+  // --- Render daily summary card ---
   return (
     <section className={`card ${s.card}`}>
       <div className={s.grid}>
-        {/* Ring */}
+
+         {/* ---------- Left side: Calorie ring & summary ---------- */}
         <div className={s.ringWrap}>
+
+          {/* Calorie progress ring (SVG circle) */}
           <svg width={size} height={size} className={s.svg} aria-label="calories progress">
+            {/* Background ring */} 
             <circle cx={size/2} cy={size/2} r={r} stroke="#e8eef5" strokeWidth={stroke} fill="none" />
+            {/* Progress ring */}
             <circle
               cx={size/2}
               cy={size/2}
@@ -34,11 +41,13 @@ export default function DaySummary({ eaten = 0, targets = {}, macros = {} }) {
               className={s.ring}
             />
           </svg>
+
+          {/* Center value: remaining kcal */}
           <div className={s.center}>
             <div className={s.big}>{remaining}</div>
             <div className={s.sub}>Remaining</div>
           </div>
-
+        {/* Meta info: eaten vs target */}
         <div className={s.meta}>
             <div>{kcalEaten}<span> Eaten</span></div>
             <div>{kcalTarget}<span> Target</span></div>

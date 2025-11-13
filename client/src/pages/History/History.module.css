@@ -8,14 +8,6 @@
     margin-top: 18px; 
 }
 
-/* ---------- Header row layout ---------- */
-.headerRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
 .h2 {
     font-size: 20px;
     font-weight: 800;
@@ -169,4 +161,62 @@ box-shadow: 0 0 0 3px rgba(14,165,233,.18); /* subtle blue glow when focused */
     .rowHead { font-size: 14px; }
     .colHead { font-size: 12px; }
     .cell { height: 28px; } 
+}
+
+/* ----- Modern header layout ----- */
+.headerBar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+}
+
+.headerLeft { display: grid; gap: 4px; }
+.rangeTextStrong { color:#0f172a; font-weight:600; opacity:.85; }
+
+.headerRight {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  justify-self: end;
+}
+
+.rangeLabelSmall {
+  color:#64748b;
+  font-size:13px;
+}
+
+/* Compact, modern pill select with chevron */
+.rangeSelect {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  background:
+    url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23566' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat right 12px center / 16px 16px,
+    #fff;
+  font: inherit;
+  color:#0f172a;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.rangeSelect:hover { background-color:#f8fafc; }
+.rangeSelect:focus {
+    outline:none;
+    border-color:#0ea5e9;
+    box-shadow:0 0 0 3px rgba(14,165,233,.18);
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 720px) {
+    .headerBar {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+    .headerRight {
+        justify-self: start;
+    }
 }

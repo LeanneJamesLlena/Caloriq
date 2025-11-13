@@ -1,12 +1,12 @@
 // define the logics of the routes inside auth.routes.js
-import { config } from '../config/env.js';
+import { config, isProduction } from '../config/env.js';
 import { createUser, verifyUser, signTokens, bumpTokenVersion } from '../services/auth.service.js'
 
 // defines how the cookie behaves
 const refreshCookieOptions = {
     httpOnly: true, // cannot be read by JavaScript
-    secure: false, // send only over HTTPS (set true in production)
-    sameSite: 'strict', // cookie sent only to same domain
+    secure: isProduction, // will be https in production. Therefore has to be set true
+    sameSite: isProduction ? 'none' : 'lax', // when in production, domain will be different so 'none' right value
     path: '/',   //  available for all routes on the domain
     maxAge: 7 * 24 * 60 * 60 * 1000,
 };

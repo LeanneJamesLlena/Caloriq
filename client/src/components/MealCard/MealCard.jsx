@@ -29,9 +29,10 @@ export default function MealCard({ title, items = [], onAddClick, onEditClick, o
         }
     };
 
+  // --- Render collapsible meal card ---
   return (
     <div className={`card ${s.card}`}>
-      {/* Header as accessible button-like div */}
+      {/* ---------- Header section (title + add button) ---------- */}
       <div
         className={s.header}
         role="button"
@@ -59,26 +60,34 @@ export default function MealCard({ title, items = [], onAddClick, onEditClick, o
         </div>
       </div>
 
+      {/* ---------- Collapsible body section ---------- */}     
       {open && (
         <div id={panelId} className={s.body}>
           {items.length === 0 ? (
             <div className={s.empty}>No foods yet — tap + to add.</div>
           ) : (
+            // Food list
             <ul className={s.list}>
               {items.map((it) => (
                 <li key={it._id || `${it.name}-${it.grams}`} className={s.item}>
+
+                  {/* Food line: name + kcal */}
                   <div className={s.lineTop}>
                     <span className={s.name}>{it.name}</span>
                     <span className={s.muted}>
                       {Math.round(it.grams || 0)} g · {Math.round(it.kcal || 0)} Cal
                     </span>
                   </div>
+
+                  {/* Sub-line: macros */}
                   <div className={s.lineSub}>
                     P {Math.round(it.protein || 0)}g ·&nbsp;
                     C {Math.round(it.carbs || 0)}g ·&nbsp;
                     F {Math.round(it.fat || 0)}g ·&nbsp;
                     Fiber {Math.round(it.fiber || 0)}g
                   </div>
+
+                   {/* Item actions: Edit / Delete */}
                   <div className={s.actions}>
                     <button type="button" className="btn btn-outline" onClick={() => onEditClick?.(it)}>Edit</button>
                     <button type="button" className="btn btn-outline" onClick={() => onDeleteClick?.(it)}>Delete</button>
@@ -87,7 +96,8 @@ export default function MealCard({ title, items = [], onAddClick, onEditClick, o
               ))}
             </ul>
           )}
-
+          
+          {/* ---------- Sticky subtotal footer ---------- */}
           <div className={s.sticky}>
             <div className={s.subtotal}>
               <span>Subtotal</span>

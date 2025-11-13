@@ -6,7 +6,7 @@ import s from './Register.module.css';
 export default function Register() {
   
   const navigate = useNavigate();
-    // get register, loading and error action from zustand store
+  // get register, loading and error action from zustand store
   const { register, loading, error } = useAuthStore();
   // form input state
   const [form, setForm] = useState({ email: '', password: '', confirm: '' });
@@ -44,21 +44,28 @@ export default function Register() {
     const { ok } = await register({ email, password: passwordTrimmed });
     if (ok) navigate('/diary');
   };
-
+  
+  // --- Render registration form layout ---
   return (
     <div className="auth-screen">
       <div className="card auth-card">
+
+        {/* ---------- App brand/logo ---------- */}
         <div className="brand">
           <div className="brand-badge">CT</div>
           <span style={{ fontWeight: 600 }}>Calorie Tracker</span>
         </div>
-
+        {/* ---------- Titles ---------- */}
         <h1 className={s.title}>Create your account</h1>
         <p className={s.subtitle}>Start tracking your calories in minutes.</p>
 
+        {/* ---------- Error message ---------- */}
         {error && <div className="alert" style={{ marginTop: '12px' }}>{error}</div>}
-
+        
+        {/* ---------- Registration form ---------- */}
         <form onSubmit={onSubmit} className={s.form} noValidate>
+
+          {/* --- Email field --- */}
           <div className={s.row}>
             <label className={s.label}>Email</label>
             <input
@@ -76,6 +83,7 @@ export default function Register() {
             )}
           </div>
 
+          {/* --- Password field with show/hide toggle --- */}
           <div className={s.row}>
             <label className={`${s.label} ${s.passLabel}`}>
               <span>Password</span>
@@ -102,6 +110,7 @@ export default function Register() {
             )}
           </div>
 
+          {/* --- Confirm password field --- */}
           <div className={s.row}>
             <label className={s.label}>Confirm password</label>
             <input
@@ -119,20 +128,24 @@ export default function Register() {
             )}
           </div>
 
+          {/* --- Submit button --- */}
           <div className={s.actions}>
             <button type="submit" className="btn btn-primary" disabled={disabled}>
               {loading ? 'Creating account…' : 'Create account'}
             </button>
           </div>
         </form>
-
+        
+        {/* ---------- Link to Login page ---------- */}
         <p className="text-muted" style={{ marginTop: '16px', fontSize: '14px', textAlign: 'center' }}>
           Already have an account?{' '}
           <Link to="/login" className={s.link}>Sign in</Link>
         </p>
       </div>
 
+      {/* ---------- Footer text ---------- */}
       <p className="page-foot">© {new Date().getFullYear()} Calorie Tracker - Built by Leanne James Llena</p>
+      
     </div>
   );
 }

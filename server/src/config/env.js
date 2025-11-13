@@ -26,4 +26,10 @@ export const config = {
     //Diary
     DEFAULT_TZ: process.env.DEFAULT_TZ || 'Europe/Helsinki',
 
+    // Environment Detector
+    NODE_ENV: process.env.NODE_ENV || 'development',
+
 };
+
+// Helper variable to set right value when in development or production
+export const isProduction = config.NODE_ENV === 'production';

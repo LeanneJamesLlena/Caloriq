@@ -1,10 +1,25 @@
 /* ---------- Macro bar row container ---------- */
-.row { margin: 14px 0; }
+.row { 
+    margin: 14px 0; 
+}
 
 /* ---------- Header above the bar (label + numbers) ---------- */
-.top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
-.label { font-weight:700; letter-spacing:-.01em; }
-.right { color:#64748b; font-weight:600; }
+.top { 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    margin-bottom:6px; 
+}
+
+.label { 
+    font-weight:700;
+    letter-spacing:-.01em;
+ }
+ 
+.right { 
+    color:#64748b; 
+    font-weight:600; 
+}
 
 /* ---------- Background track of the bar ---------- */
 .bar {

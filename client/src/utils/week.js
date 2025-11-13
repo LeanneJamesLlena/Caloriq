@@ -49,5 +49,5 @@ export function ymdRange({ from, to }) {
 
 // Generates an array of 7 day strings ("YYYY-MM-DD") starting from given Monday
 export function listWeekDays(from) {
-  return Array.from({ length: 7 }, (_, i) => toYMD(addDays(from, i)));
+    return Array.from({ length: 7 }, (_, i) => toYMD(addDays(from, i)));
 }

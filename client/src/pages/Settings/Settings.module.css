@@ -18,11 +18,6 @@
 .fieldFull { grid-column: 1 / -1; display: grid; gap: 6px; }
 .label { font-size: 12px; font-weight: 600; color: #334155; }
 
-/* ---------- Actions row ---------- */
-.actions {
-  display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px;
-}
-
 /* ---------- Segmented control ---------- */
 .seg { display: flex; gap: 6px; flex-wrap: wrap; }
 .segBtn {
@@ -58,4 +53,61 @@
   .grid2 { grid-template-columns: 1fr; }
   .grid4 { grid-template-columns: 1fr; }
   .previewGrid { grid-template-columns: repeat(2, auto); row-gap: 8px; }
+}
+
+/* --- Modern select styling (works with your global .input base) --- */
+.select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* extra right space for chevron */
+  padding-right: 40px !important;
+  cursor: pointer;
+  background:
+    url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat right 12px center / 16px 16px,
+    #fff;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease, filter .15s ease;
+}
+
+.select:hover {
+  background-color: #f8fafc;
+  filter: brightness(0.995);
+}
+
+.select:focus {
+  outline: none;
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 0 0 3px rgba(14,165,233,.18);
+}
+
+/* Light polish for cards spacing so the page breathes a bit more */
+.card { padding: 22px; margin-bottom: 18px; }
+.cardHeader { margin-bottom: 14px; }
+
+/* Keep controls comfy on small screens */
+@media (max-width: 560px) {
+  .select { padding-right: 36px !important; }
+}
+
+/* Uniform call-to-action sizing */
+.cta {
+  padding: 10px 14px;         /* consistent height */
+  border-radius: 12px;        /* softer, modern */
+  font-weight: 700;           /* same visual weight across */
+  min-width: 160px;           /* prevents “jittery” widths */
+}
+
+/* Action rows already exist; just make spacing a tad roomier and responsive */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 14px;
+  flex-wrap: wrap;            /* allows stacking on small screens */
+}
+
+@media (max-width: 560px) {
+  .actions { justify-content: stretch; }
+  .actions .cta { flex: 1; }  /* full-width buttons on mobile */
 }

@@ -6,7 +6,7 @@ import useDiaryStore from '../../store/diaryStore';
 import useDebounce from '../../hooks/useDebounce';
 import s from './AddFoodSheet.module.css';
 
-// Meal names for display vs. backend values
+// Meal names for display and backend mapping
 const MEAL_OPTIONS = [
     { label: 'Breakfast', value: 'breakfast' },
     { label: 'Lunch',     value: 'lunch' },
@@ -152,14 +152,14 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
         }
     };
 
-    // portion -> grams
+    // Update grams when user selects a portion size
     useEffect(() => {
         if (!food?.portions || portionIndex < 0) return;
         const p = food.portions[portionIndex];
         if (p?.grams) setGrams(Math.max(1, Math.round(p.grams)));
     }, [portionIndex, food]);
 
-    // nutrition preview
+    // Compute scaled nutrition preview
     const scaled = useMemo(() => {
 
         if (!food?.per100g) return null;
@@ -179,17 +179,17 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
         };
     }, [food, grams]);
 
-    // allowed to submit?
+     // Determine if submission is valid
     const canSubmit = !!food && grams > 0;
 
-    // submit to backend
+    // Handle save/add submission
     const onSubmit = async () => {
 
         if (!canSubmit || submitLoading) return;
 
         const payload = {
             date: toYMD(date),
-            mealType: meal, // already lowercase, e.g. "lunch"
+            mealType: meal,
             fdcId: food.fdcId,
             grams: Math.round(grams),
         };
@@ -199,12 +199,13 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
             setSubmitLoading(true);
 
             if (editItem?._id) {
+                // Update existing diary item
                 await updateItem(editItem._id, {
                 grams: payload.grams,
                 mealType: payload.mealType,
                 });
             } else {
-
+                // Add new diary item
                 await addItem(payload);
             }
 
@@ -226,9 +227,9 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
             setSubmitLoading(false);
         }
     };
-
+  // Don’t render if popup window is closed
   if (!open) return null;
-
+  // --- Render popup window's UI ---
   return (
     
     <div className={s.backdrop} onClick={onClose}>
@@ -240,7 +241,7 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
           <button type="button" className="btn btn-outline" onClick={onClose}>Close</button>
         </div>
 
-        {/* Search */}
+        {/* Search input + results*/}
         <div className={s.field}>
           <label className={s.label}>Search food</label>
           <input
@@ -287,7 +288,7 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
           )}
         </div>
 
-        {/* Quantity */}
+        {/* Quantity selector */}
         <div className={s.field}>
           <label className={s.label}>Quantity (grams)</label>
           <div className={s.gramsRow}>
@@ -317,7 +318,7 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
           </div>
         </div>
 
-        {/* Meal */}
+        {/* Meal selector */}
         <div className={s.field}>
           <label className={s.label}>Meal</label>
           <select
@@ -333,7 +334,7 @@ export default function AddFoodSheet({ open, onClose, date, defaultMeal, editIte
           </select>
         </div>
 
-        {/* Preview */}
+        {/* Nutrition preview */}
         <div className={s.preview}>
           {food && scaled ? (
             <>

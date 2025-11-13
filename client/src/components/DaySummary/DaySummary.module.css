@@ -1,6 +1,5 @@
-/* Card layout */
-.card { padding: 28px 28px 20px; }
 
+/* ---------- Grid layout: ring + macro bars ---------- */
 .grid {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -15,10 +14,21 @@
     justify-items: center;     
     gap: 10px;                 
 }
-.svg { display: block; }
-.ring { transition: stroke-dasharray .45s ease; }
 
-.center .big { font-size: 36px; font-weight: 800; letter-spacing: -.02em; }
+/* ---------- Left side: calorie ring area ---------- */
+.svg {
+    display: block; 
+}
+.ring { 
+    transition: stroke-dasharray .45s ease; 
+}
+
+/* ---------- Centered text inside the ring ---------- */
+.center .big { 
+    font-size: 36px; 
+    font-weight: 800; 
+    letter-spacing: -.02em; 
+}
 .center .sub { color: #64748b; font-weight: 600; margin-top: 2px; }
 
 /* Eaten / Target row under ring */
@@ -36,7 +46,7 @@
     display: grid;
     gap: 16px;                
 }
-/* add spacing before Breakfast card */
+/* Card layout */
 .card {
   padding: 28px 28px 20px;
   margin-bottom: 16px;   
