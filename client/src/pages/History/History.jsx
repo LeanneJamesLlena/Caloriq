@@ -15,7 +15,7 @@ function toDMY(ymd) {
     return `${d}-${m}-${y}`;
 }
 
-//  NEW: helpers to map preset -> date range and load/save
+// helpers to map preset -> date range and load/save
 function makeRangeFor(key) {
     if (key === 'last') return lastWeekRange();
     if (key === 'last2') {
@@ -42,6 +42,7 @@ function computeMetrics(days, targets) {
     const kcalTarget = Number(targets?.calories || 0);
     const total = days.reduce((sum, d) => sum + (d.kcal || 0), 0);
     const avg = days.length ? Math.round(total / days.length) : 0;
+
     // Count how many days fall within ±5% of daily kcal target
     const within = days.filter(d => {
         if (!kcalTarget) return false;
@@ -61,7 +62,7 @@ export default function History() {
     // pull targets and the store's fetch/loading/error
     const { targets, fetchAll, loading: storeLoading, error: storeError } = useDiaryStore();
 
-    // --- NEW: controlled preset + persisted value
+    // controlled preset + persisted value
     const initialPreset = loadPreset();
     const [preset, setPreset] = useState(initialPreset);
     const [range, setRange] = useState(makeRangeFor(initialPreset));
@@ -71,19 +72,18 @@ export default function History() {
     // ensure targets are loaded on first mount (prevents flash of 0 target after refresh)
     useEffect(() => {
         if (targets == null) fetchAll().catch(() => {});
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+    }, []); 
+    
     // fetch week data when range changes
     useEffect(() => {
         fetchWeek(range.from, range.to);
-    }, [range.from, range.to]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [range.from, range.to]); 
 
     const metrics = useMemo(() => computeMetrics(days, targets || {}), [days, targets]);
     const { from, to } = ymdRange(range);
     const rangeLabel = `${toDMY(from)} - ${toDMY(to)}`;
 
     // Preset range buttons handler (this week / last week / last 2 weeks)
-  // --- UPDATED: set both preset + range and persist
     const onPreset = (key) => {
         setPreset(key);
         savePreset(key);
@@ -102,9 +102,10 @@ export default function History() {
   return (
     <>
       <main className="container" style={{ paddingTop: 24, paddingBottom: 100 }}>
+
+        {/* ---------- Weekly Summary Card ---------- */}
         <section className={`card ${s.card}`}>
 
-          {/* --- pass selected preset to header (controlled select) */}
            <HistoryHeader rangeLabel={rangeLabel} onPreset={onPreset} selected={preset} />
 
           {!ready && <div className="text-muted">Loading your targets…</div>}
@@ -150,6 +151,7 @@ export default function History() {
               {anyLoading && <div className="text-muted">Loading…</div>}
               {anyError && !anyLoading && <div className="alert">{anyError}</div>}
 
+              {/* --- Calorie bars --- */}
               {!anyLoading && !anyError && (
                 <KcalBars
                   days={days}
@@ -161,6 +163,7 @@ export default function History() {
           )}
         </section>
 
+        {/* ---------- Macro Breakdown Card ---------- */}
         <section className={`card ${s.card}`}>
           <MacroTiles
             key={`mt-${days.length}-${targets?.protein||0}-${targets?.carbs||0}-${targets?.fat||0}-${targets?.fiber||0}`}

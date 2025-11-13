@@ -54,6 +54,7 @@ export default function Diary() {
 
   // get actions from useDiaryStore
   const { date, setDate, targets, data, loading, error, fetchAll } = useDiaryStore();
+
   //Local UI state
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetMeal, setSheetMeal] = useState('Breakfast');
@@ -73,7 +74,8 @@ export default function Diary() {
 
     navigate(location.pathname, { replace: true });
   }, [location.search, date, setDate, navigate, location.pathname]);
-    // 2) On first mount, if there was NO ?date=, restore last viewed date from localStorage
+
+  // 2) On first mount, if there was NO ?date=, restore last viewed date from localStorage
   useEffect(() => {
     if (loadedFromStorage.current) return;
     loadedFromStorage.current = true;
@@ -96,9 +98,9 @@ export default function Diary() {
   }, [date]);
 
 
-
- // Fetch diary data when date changes
+  // Fetch diary data when date changes
   useEffect(() => { fetchAll(); }, [date]);
+
   // Fallbacks to avoid undefined values in UI
   const t = targets || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
   const day = data?.dayTotals || { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
@@ -106,12 +108,14 @@ export default function Diary() {
 
   // Open sheet to add a new meal
   const openAdd = (meal) => { setEditItem(null); setSheetMeal(meal); setSheetOpen(true); };
+
   // Open sheet to edit a meal
   const openEdit = (item) => {
     setEditItem(item);
     setSheetMeal(capMeal(item.mealType));
     setSheetOpen(true);
   };
+
   // Delete a food item and refresh data
   const onDelete = async (item) => {
     try {
@@ -126,20 +130,27 @@ export default function Diary() {
   const remaining = Math.max(0, (t.calories || 0) - (day.kcal || 0));
   const eaten = day.kcal || 0;
 
+  /* ---------- Render main Diary layout ---------- */
   return (
     <>
+      {/* Top navigation */}
       <Header />
 
       <main className="container" style={{ paddingTop: 24, paddingBottom: 80 }}>
+
+        {/* --- Date selector --- */}
         <DatePicker value={date} onChange={setDate} />
 
+        {/* --- Loading & error states --- */}
         {loading && <div className="card" style={{ padding: 16 }}>Loading…</div>}
+
+        {/* --- Error message --- */}
         {error && !loading && <div className="alert" style={{ marginBottom: 16 }}>{error}</div>}
 
-
+        {/* --- Daily summary section --- */}
         <DaySummary eaten={day.kcal || 0} targets={t} macros={day} />
 
-        {/* Meals */}
+        {/* --- Meal cards (Breakfast, Lunch, Dinner, Snack) --- */}
         <div className={s.meals}>
           <MealCard title="Breakfast" items={meals.Breakfast}
             onAddClick={() => openAdd('Breakfast')}
@@ -163,7 +174,7 @@ export default function Diary() {
           />
         </div>
       </main>
-
+      {/* Bottom navigation */}
       <Footer/>
       
       {/* Add/Edit Sheet */}

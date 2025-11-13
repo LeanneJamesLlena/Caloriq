@@ -1,4 +1,5 @@
 import s from './MacroTiles.module.css';
+import { Fragment } from 'react';
 
 // Define the rows (macronutrients) to be displayed
 const ROWS = [
@@ -31,11 +32,17 @@ export default function MacroTiles({ days, targets }) {
 
   return (
     <div className={s.tilesCard}>
+      {/* ---------- Header ---------- */}
       <div className={s.tilesHeader}><h3>Weekly macros</h3></div>
+
+      {/* ---------- Main grid layout ---------- */}
       <div className={s.tilesGrid}>
         <div className={s.corner}/>
+
+        {/* ---------- Main grid layout ---------- */}
         {weekdays.map(d => <div key={d} className={s.colHead}>{d}</div>)}
 
+        {/* Each macronutrient row */}
         {ROWS.map(row => (
           <Fragment key={row.key}>
             <div className={s.rowHead}>{row.label}</div>
@@ -59,8 +66,8 @@ export default function MacroTiles({ days, targets }) {
           </Fragment>
         ))}
       </div>
+      {/* ---------- Legend ---------- */}
       <div className={s.note}>✓ within ~5% of target · ↑ over · ↓ under</div>
     </div>
   );
 }
-import { Fragment } from 'react';

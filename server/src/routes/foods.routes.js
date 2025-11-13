@@ -10,6 +10,5 @@ const searchLimiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
 // GET /api/foods/search
 router.get('/search', searchLimiter, searchFoods); //tested and working
 // GET /api/foods/:fcId
-router.get('/:fdcId', getFoodById); //tested and working, ONE PROBLEM: SOME ITEM's SUGAR MACRO IS INACCURATE
-
+router.get('/:fdcId', getFoodById); //tested and working
 export default router;

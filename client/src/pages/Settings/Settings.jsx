@@ -3,6 +3,7 @@ import { getTargets, updateTargets } from '../../services/profile.api';
 import useDiaryStore from '../../store/diaryStore';
 import Footer from '../../components/Footer/Footer';
 import s from './Settings.module.css';
+
 // Activity level options with multipliers for TDEE
 const ACTIVITY = [
   { key: 'sedentary', label: 'Sedentary (little/no exercise)', factor: 1.2 },
@@ -51,8 +52,8 @@ export default function Settings() {
     calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0,
   });
 
-  // Calculator inputs
 
+  // Calculator inputs
   const [calc, setCalc] = useState({
     sex: 'female',
     age: 25,
@@ -70,7 +71,7 @@ export default function Settings() {
         setLoading(true);
         setFetchErr('');
  
-        const t = await getTargets();     // now already flat
+        const t = await getTargets();     
         if (!alive) return;
         setForm({
           calories: Number(t.calories || 0),
@@ -89,6 +90,7 @@ export default function Settings() {
     return () => { alive = false; };
   }, []);
 
+
   // Calculate proposal when inputs change
   const proposal = useMemo(() => {
     const bmr = calcBmr(calc);
@@ -99,6 +101,7 @@ export default function Settings() {
     const macros = proposeMacros({ kcal, weightKg: calc.weightKg });
     return { bmr, tdee, kcal, ...macros };
   }, [calc]);
+
   // Copy calculator numbers into the form
   const applyProposalToForm = () => {
     setForm(f => ({
@@ -110,12 +113,14 @@ export default function Settings() {
       fiber   : proposal.fiber,
     }));
   };
+
   // Safe numeric parsing (non-negative)
   const onNumber = (val) => {
     const n = Number(val);
     return Number.isFinite(n) ? Math.max(0, n) : 0;
   };
-  // Persist targets and refresh diary data
+
+  // Save user’s targets to backend and refresh diary data
   const onSave = async () => {
     try {
       setSaveErr('');
@@ -128,7 +133,7 @@ export default function Settings() {
         fiber   : onNumber(form.fiber),
       };
       await updateTargets(payload);
-      await fetchAll(); // refresh diary totals with new targets
+      await fetchAll();
     } catch (e) {
       const msg = e?.response?.data?.error || e?.message || 'Failed to save targets';
       setSaveErr(msg);
@@ -137,25 +142,29 @@ export default function Settings() {
     }
   };
 
+  /* ---------- Render main Settings layout ---------- */
   return (
     <>
     <main className={`${s.page} container`} style={{ paddingBottom: 100 }}>
 
       <h1 className={s.h1}>Settings</h1>
 
-      {/* Targets card */}
+      {/* ---------- Targets card (user-editable goals) ---------- */}
       <section className={`card ${s.card}`}>
         <div className={s.cardHeader}>
           <h2 className={s.h2}>Targets</h2>
           <p className="text-muted">Daily goals used in your Diary totals.</p>
         </div>
 
+        {/* --- Loading and error states --- */}
         {loading ? (
           <div>Loading…</div>
         ) : fetchErr ? (
           <div className="alert">{fetchErr}</div>
         ) : (
           <>
+
+            {/* --- Form fields for calories and macros --- */}
             <div className={s.grid2}>
               <div className={s.field}>
                 <label className={s.label}>Calories (kcal)</label>
@@ -213,14 +222,15 @@ export default function Settings() {
               </div>
             </div>
 
+            {/* --- Error + Action buttons --- */}
             {saveErr && <div className="alert" style={{ marginTop: 8 }}>{saveErr}</div>}
 
             <div className={s.actions}>
-              <button className="btn btn-outline" type="button" onClick={applyProposalToForm}>
+              <button className={`btn btn-outline ${s.cta}`} type="button" onClick={applyProposalToForm}>
                 Use calculator result
               </button>
               <button
-                className="btn btn-primary"
+                className={`btn btn-primary ${s.cta}`}
                 type="button"
                 onClick={onSave}
                 disabled={saving}
@@ -232,18 +242,19 @@ export default function Settings() {
         )}
       </section>
 
-      {/* Calculator card */}
+      {/* ---------- Calculator card (TDEE and macros) ---------- */}
       <section className={`card ${s.card}`}>
         <div className={s.cardHeader}>
           <h2 className={s.h2}>TDEE Calculator</h2>
           <p className="text-muted">Estimate daily calories using Mifflin–St Jeor. Macros are suggested and can be tweaked.</p>
         </div>
 
+        {/* --- Calculator input fields --- */}
         <div className={s.grid4}>
           <div className={s.field}>
             <label className={s.label}>Sex</label>
             <select
-              className="input"
+              className={`input ${s.select}`} 
               value={calc.sex}
               onChange={(e) => setCalc({ ...calc, sex: e.target.value })}
             >
@@ -288,7 +299,7 @@ export default function Settings() {
           <div className={s.fieldFull}>
             <label className={s.label}>Activity</label>
             <select
-              className="input"
+              className={`input ${s.select}`} 
               value={calc.activity}
               onChange={(e) => setCalc({ ...calc, activity: e.target.value })}
             >
@@ -313,6 +324,7 @@ export default function Settings() {
           </div>
         </div>
 
+        {/* --- Preview of calculator results --- */}
         <div className={s.preview}>
           <div className={s.previewRow}>
             <div>BMR</div>
@@ -333,9 +345,10 @@ export default function Settings() {
             <span>Fiber {proposal.fiber} g</span>
           </div>
         </div>
-
+        
+         {/* --- Apply proposal button --- */}
         <div className={s.actions}>
-          <button className="btn btn-primary" type="button" onClick={applyProposalToForm}>
+          <button className={`btn btn-primary ${s.cta}`} type="button" onClick={applyProposalToForm}>
             Apply to targets
           </button>
         </div>

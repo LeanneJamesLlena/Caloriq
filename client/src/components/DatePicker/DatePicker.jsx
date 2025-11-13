@@ -38,12 +38,15 @@ export default function DatePicker({ value, onChange }) {
         String(value.getDate()).padStart(2, '0'),
     ].join('-');
 
+  // --- Render date picker ---
   return (
     <div className={s.wrap}>
+      {/* Left arrow button: go to previous day */}
       <button type="button" className={s.arrow} onClick={() => addDays(-1)}>
         ← Yesterday
       </button>
 
+      {/* Center section showing title, subtitle, and date input */}
       <div className={s.center}>
         <div className={s.title}>{titleLabel}</div>
         <div className={s.sub}>{subLabel}</div>
@@ -54,7 +57,7 @@ export default function DatePicker({ value, onChange }) {
           onChange={onInputChange}
         />
       </div>
-
+      {/* Right arrow button: go to next day */}
       <button type="button" className={s.arrow} onClick={() => addDays(1)}>
         Tomorrow →
       </button>
