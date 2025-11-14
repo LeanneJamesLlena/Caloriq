@@ -112,7 +112,7 @@ Here are some previews of the Calorie Tracker UI.
 ### ⚙️ Settings View
 
 <p align="center">
-  <img src="assets/ui-screenshots/Settings-view(nottargetsSet).png" width="600" />
+  <img src="assets/ui-screenshots/Settings-view(notargetsSet).png" width="600" />
 </p>
 
 <p align="center">
@@ -196,6 +196,8 @@ https://calorie-tracker-frontend-ecru.vercel.app/
 ## 📂 Project Structure
 
 ### Frontend
+
+```bash
 calorie-tracker/
 ├── client/                       # React frontend (Vite)
 │   ├── public/                   # empty
@@ -298,8 +300,8 @@ calorie-tracker/
 │   └── index.html
 │   └── vite.config.js
 
-
-
+```
+```bash
 ### Backend
 
 server/
@@ -355,7 +357,7 @@ server/
 ├─ package.json
 ├─ package-lock.json
 └─ .gitignore
-
+```
 
 ## Installation & Setup
 1. Clone the repository
