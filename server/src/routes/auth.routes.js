@@ -1,5 +1,5 @@
 import express from 'express'
-//import the logics of the routes
+//import the logics of the routess
 import { register, login, refresh, logout, me } from '../controllers/auth.controller.js';
 import { verifyAccess, readAndValidateRefresh } from '../middleware/auth.js';
 
