@@ -9,7 +9,7 @@ let refreshPromise = null;
 
 // Create Axios instance with backend base URL and refresh cookie support
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + '/api', //VITE_API_URL=url provided by Render
+  baseURL: '/api',
   withCredentials: true,                // send/receive the HTTP-only refresh cookie
 });
 
