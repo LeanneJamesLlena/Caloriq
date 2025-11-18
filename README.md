@@ -165,11 +165,13 @@ https://calorie-tracker-frontend-ecru.vercel.app/
 ### Frontend
 - React + Vite  
 - CSS Modules  
-- Zustand  
+- Zustand
+- **Deployed on Vercel:**  
 
 ### Backend
 - Node.js + Express  
 - MongoDB (Mongoose)  
+- **Deployed on Render**
 
 ### Auth
 - In-memory JWT access token  
@@ -288,7 +290,7 @@ calorie-tracker/
 │       │   ├── ui.css
 │       │   └── variables.css
 │       │
-│       ├── utils/                #Date format helpers
+│       ├── utils/                # Date format helpers
 │       │   ├── date.js
 │       │   └── week.js
 │       │
@@ -299,7 +301,7 @@ calorie-tracker/
 │   ├── package.json
 │   └── index.html
 │   └── vite.config.js
-
+│   └── vercel.json.         # Helps Vercel send API requests to the backend and keeps the app from breaking when reloading a page.
 ```
 ### Backend
 
@@ -358,6 +360,39 @@ server/
 ├─ package-lock.json
 └─ .gitignore
 ```
+
+---
+
+## 📚 Lessons Learned
+
+Building this full-stack application provided invaluable experience in modern web development. 
+Here are the key insights I gained:
+
+### 🔐 Authentication & Security
+
+*Challenge:* Implementing a secure authentication system that protects against common vulnerabilities like XSS attacks.
+
+*Solution:* Instead of storing tokens in localStorage, I implemented a dual-token system with short-lived JWT access tokens (kept in memory) and secure HTTP-only cookies for refresh tokens. In addition, backend security was stengthend by adding security with helmet for HTTP headers, express-rate-limit to protect against spam attacks, and sanitized CORS configuration to ensure that cookies are only shared between trusted origins.
+
+*Learning:* I gained a deeper understanding of web security fundamentals and how proper token storage is crucial for production-ready applications.
+
+### 🎨 Data Visualization & UX Design
+
+*Challenge:* The weekly progress and diary views had to show nutritional information clearly, without ever feeling slow or clunky on any device. My early attempts were a bit messy; buttons didn't match, the layout felt cramped, and it was hard to tell at a glance how you were doing on your macros. All of this made the screen feel crowded and confusing.
+
+*Solution:* My approach was to rebuild the interface with a clean, grid-based structure. I introduced reusable components like KcalBars and MacroTiles to visually represent weekly calories and macro nutrients. I established a single style for all buttons, tightened up the spacing and fonts for a more modern look, and added subtle color-coding (green, yellow, red) so users could understand their progress in an instant.
+
+*Learning:* I learned how thoughtful spacing, consistent components, and visual feedback can massively improve user experience. Even small design refinements such as aligning buttons, standardizing card layouts, and color-coding performance, can make a data-heavy app feel intuitive and enjoyable to use.
+
+### 🔄 Refresh Tokens & Single Page Application(SPA) Routing
+
+*Challenge:* After deployment, the refresh token wasn’t working and users were logged out on every page reload. This happened because the frontend (Vercel) and backend (Render) were on different domains, causing the browser to block the HTTP-only refresh cookie. Additionally, refreshing routes like /diary or /history resulted in Vercel's 404 page instead of loading the React app.
+
+*Solution:* I added a vercel.json file in the client's root directory(client/) that forwards all /api requests through the frontend domain, allowing the browser to send the refresh cookie safely. The same file also adds a fallback rewrite so Vercel always serves index.html for non-API routes, letting React Router handle page reloads.
+
+*Learning:* I learned how cross-domain requests affect cookie behavior, and how routing rewrites are essential for deploying single-page applications. These fixes made both authentication and page navigation work smoothly in production.
+
+---
 
 ## Installation & Setup
 1. Clone the repository
