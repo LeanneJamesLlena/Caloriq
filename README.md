@@ -14,6 +14,33 @@ Everything is secured with **JWT auth** and **HTTP-only refresh cookies**.
 
 ---
 
+## 🌐 Live Demo
+
+**Live Demo Link:**  
+https://calorie-tracker-frontend-ecru.vercel.app/
+
+### Instructions
+1. Register with email + password (min 6 chars)  
+2. Log in  
+3. Go to **Settings**
+   - Set targets manually **or** use the TDEE Calculator  
+   - Fill out the form  
+   - Choose your goal  
+   - Press *Use calculator result* or *Apply Targets*. NOTE: Both buttons only fills the form with TDEE Calculator's given Targets
+   - Press **Save Targets** to actually save the Targets
+4. Go to **Diary** (defaults to Today)
+5. Add foods:
+   - Press **+** on a meal  
+   - Search → pick variant (raw, cooked, etc.)  
+   - Enter grams → see live macros  
+   - Choose meal  
+   - Press **Save**
+6. Each meal section show subtotals; click to expand foods and see listed food's in the certain section
+7. Edit or delete anytime  
+8. Weekly Progress shows your calorie & macro trends  
+
+---
+
 ## ✨ Features
 
 ### 🔐 Sign up & log in securely
@@ -137,29 +164,6 @@ Here are some previews of the Caloriq UI.
 
 
 ---
-
-## 🌐 Live Demo Instructions
-1. Register with email + password (min 6 chars)  
-2. Log in  
-3. Go to **Settings**
-   - Set targets manually **or** use the TDEE Calculator  
-   - Fill out the form  
-   - Choose your goal  
-   - Press *Use calculator result* or *Apply Targets*. NOTE: Both buttons only fills the form with TDEE Calculator's given Targets
-   - Press **Save Targets** to actually save the Targets
-4. Go to **Diary** (defaults to Today)
-5. Add foods:
-   - Press **+** on a meal  
-   - Search → pick variant (raw, cooked, etc.)  
-   - Enter grams → see live macros  
-   - Choose meal  
-   - Press **Save**
-6. Each meal section show subtotals; click to expand foods and see listed food's in the certain section
-7. Edit or delete anytime  
-8. Weekly Progress shows your calorie & macro trends  
-
-**Live Demo Link:**  
-https://calorie-tracker-frontend-ecru.vercel.app/
 
 ## 🛠️ Built With
 ### Frontend
